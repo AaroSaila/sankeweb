@@ -2,3 +2,20 @@ body {
   background-color: #29282a;
   color: white;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: hsla(207 100% 43% / 0.84);
+}
+
+a:hover {
+  background-color: hsla(207 100% 33% / 0.84);
+
+}
+
+a:visited {
+  color: white;
+}
