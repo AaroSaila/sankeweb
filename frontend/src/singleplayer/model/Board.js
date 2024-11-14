@@ -5,14 +5,18 @@ import { populateCoords } from "../utils/populateCoords.js";
 
 
 export default class Board {
-  constructor(element, color, entitySize) {
-    this.element = element;
-    this.color = color;
+  constructor(entitySize, boardWidth, boardHeight) {
     this.entitySize = entitySize;
 
-    this.ctx = this.element.getContext("2d");
-
-    this.sanke = new Sanke(this, 300, 300, "green");
+    this.sanke = new Sanke(
+      this,
+      300,
+      300,
+      "green",
+      boardWidth,
+      boardHeight,
+      entitySize
+    );
 
     this.food = {
       x: 400,
@@ -21,27 +25,6 @@ export default class Board {
     };
 
     this.score = 0;
-  }
-
-  draw() {
-    // Reset board
-    // this.ctx.fillStyle = this.color;
-    this.ctx.clearRect(
-      0,
-      0,
-      this.element.width,
-      this.element.height
-    );
-
-    this.sanke.draw(this.ctx);
-
-    this.ctx.fillStyle = this.food.color;
-    this.ctx.fillRect(
-      this.food.x,
-      this.food.y,
-      this.entitySize,
-      this.entitySize
-    );
   }
 
   moveSanke() {
@@ -75,5 +58,9 @@ export default class Board {
       this.score++;
       this.sanke.newPart();
     }
+  }
+
+  changeSankeDirection(newDir) {
+    this.sanke.changeDirection(newDir);
   }
 }

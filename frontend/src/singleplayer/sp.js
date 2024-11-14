@@ -1,21 +1,21 @@
 "use strict";
 
-import Board from "./Board/Board.js";
+import BoardController from "./controller/BoardController.js";
+
 
 const gameLoop = board => {
-  board.draw();
-  board.moveSanke();
-  board.checkFood();
-  
-  if (board.score > scoreSpan.textContent) {
-    scoreSpan.textContent = board.score;
+  board.tick();
+
+  const score = board.getScore();
+  if (score > scoreSpan.textContent) {
+    scoreSpan.textContent = score;
   }
 };
 
 
 const scoreSpan = document.getElementById("score");
 
-const board = new Board(
+const board = new BoardController(
   document.getElementById("board"),
   "#3d3d3d",
   20
@@ -35,16 +35,16 @@ startButton.addEventListener("click", () => {
   document.addEventListener("keypress", (e) => {
     switch (e.key) {
       case "w":
-        board.sanke.changeDirection("u");
+        board.changeSankeDirection("u");
         break;
       case "d":
-        board.sanke.changeDirection("r");
+        board.changeSankeDirection("r");
         break;
       case "s":
-        board.sanke.changeDirection("d");
+        board.changeSankeDirection("d");
         break;
       case "a":
-        board.sanke.changeDirection("l");
+        board.changeSankeDirection("l");
         break;
     }
   })
