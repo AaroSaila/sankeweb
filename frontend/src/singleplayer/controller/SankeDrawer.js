@@ -17,7 +17,7 @@ export default class SankeDrawer {
     // const boardHeight = this.board.element.height;
 
     this.ctx.fillStyle = this.color;
-    console.log(this.sanke.head);
+    // console.log(this.sanke.head);
     this.drawPartOrHead(this.sanke.head);
     this.sanke.parts.forEach(part => this.drawPartOrHead(part));
   }

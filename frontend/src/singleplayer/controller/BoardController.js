@@ -23,22 +23,19 @@ export default class BoardController {
   }
 
   tick() {
-    this.draw();
     this.model.moveSanke();
     this.model.checkFood();
+    this.draw();
   }
 
   draw() {
     // Reset board
-    // this.ctx.fillStyle = this.color;
     this.ctx.clearRect(
       0,
       0,
       this.element.width,
       this.element.height
     );
-
-    this.sankeDrawer.draw();
 
     this.ctx.fillStyle = this.model.food.color;
     this.ctx.fillRect(
@@ -47,9 +44,27 @@ export default class BoardController {
       this.entitySize,
       this.entitySize
     );
+
+    this.sankeDrawer.draw();
   }
 
   changeSankeDirection(newDir) {
+    const oldDir = this.model.getSankeDirection();
+
+    if (oldDir === newDir) {
+      return;
+    }
+
+    // Check if directions are opposites
+    const dirs = [oldDir, newDir];
+
+    if (
+      dirs.includes("u") && dirs.includes("d")
+      || dirs.includes("l") && dirs.includes("r")
+    ) {
+      return;
+    }
+
     this.model.changeSankeDirection(newDir);
   }
 

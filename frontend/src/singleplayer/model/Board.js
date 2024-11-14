@@ -1,7 +1,6 @@
 "use strict";
 
 import Sanke from "./Sanke.js";
-import { populateCoords } from "../utils/populateCoords.js";
 
 
 export default class Board {
@@ -32,32 +31,58 @@ export default class Board {
   }
 
   checkFoodCollision() {
-    const foodCoords = populateCoords(this.food, this.entitySize);
-    const sankeCoords = populateCoords(this.sanke.head, this.entitySize);
-    // console.log(foodCoords, sankeCoords);
-
-    for (let i = 0; i < foodCoords.length; i++) {
-      for (let j = 0; j < sankeCoords.length; j++) {
-        if (
-          foodCoords[i][0] === sankeCoords[j][0]
-          && foodCoords[i][1] === sankeCoords[j][1]
-        ) {
-          return true;
-        }
-      }
+    if (
+      this.sanke.head.x === this.food.x
+      && this.sanke.head.y === this.food.y
+    ) {
+      return true;
+    } else {
+      return false
     }
-
-    return false;
   }
 
   checkFood() {
     if (this.checkFoodCollision()) {
-      this.food.x = parseInt(Math.random() * 100 % 600);
-      this.food.y = parseInt(Math.random() * 100 % 600);
-      
-      this.score++;
       this.sanke.newPart();
+
+      let newX = 1;
+      let newY = 1;
+
+      while (
+        newX % this.entitySize !== 0
+        && newX !== this.sanke.head.x
+      ) {
+        // console.log("generating number")
+        newX = parseInt(Math.random() * 1000 % 600);
+      }
+
+      while (
+        newY % this.entitySize !== 0
+        && newY !== this.sanke.head.y
+      ) {
+        // console.log("generating number")
+        newY = parseInt(Math.random() * 1000 % 600);
+      }
+
+      if (this.sanke.checkTailCollision(newX, newY)) {
+        while (
+          newY % this.entitySize !== 0
+          && newY !== this.sanke.head.y
+        ) {
+          // console.log("generating number")
+          newY = parseInt(Math.random() * 1000 % 600);
+        }
+      }
+
+      this.food.x = newX;
+      this.food.y = newY;
+
+      this.score++;
     }
+  }
+
+  getSankeDirection() {
+    return this.sanke.head.dir;
   }
 
   changeSankeDirection(newDir) {

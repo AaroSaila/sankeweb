@@ -1,15 +1,36 @@
 "use strict";
 
 import BoardController from "./controller/BoardController.js";
+import { TICK_MS } from "./spGlobals.js";
 
 
-const gameLoop = board => {
+const gameLoop = (board, keyQueue) => {
+  // const tickStart = performance.now();
+
+  switch (keyQueue.shift()) {
+    case "w":
+      board.changeSankeDirection("u");
+      break;
+    case "d":
+      board.changeSankeDirection("r");
+      break;
+    case "s":
+      board.changeSankeDirection("d");
+      break;
+    case "a":
+      board.changeSankeDirection("l");
+      break;
+  }
+
   board.tick();
 
   const score = board.getScore();
   if (score > scoreSpan.textContent) {
     scoreSpan.textContent = score;
   }
+
+  // const tickEnd = performance.now();
+  // console.log("tick time:", tickEnd - tickStart);
 };
 
 
@@ -23,30 +44,19 @@ const board = new BoardController(
 
 let intervalId = null;
 
+const keyQueue = [];
+
 const startButton = document.getElementById("start");
 
 startButton.addEventListener("click", () => {
   startButton.classList.add("disabled");
 
-  intervalId = setInterval(() => gameLoop(board), 5);
+  intervalId = setInterval(() => gameLoop(board, keyQueue), TICK_MS);
 
   scoreSpan.textContent = "0";
 
   document.addEventListener("keypress", (e) => {
-    switch (e.key) {
-      case "w":
-        board.changeSankeDirection("u");
-        break;
-      case "d":
-        board.changeSankeDirection("r");
-        break;
-      case "s":
-        board.changeSankeDirection("d");
-        break;
-      case "a":
-        board.changeSankeDirection("l");
-        break;
-    }
+    keyQueue.push(e.key);
   })
 });
 
