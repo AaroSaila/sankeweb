@@ -16,6 +16,7 @@ export default class BoardController {
       this.model.sanke,
       this.ctx,
       "green",
+      "darkgreen",
       element.width,
       element.height,
       entitySize
@@ -23,9 +24,17 @@ export default class BoardController {
   }
 
   tick() {
-    this.model.moveSanke();
-    this.model.checkFood();
+    if (this.model.moveSanke() === "tail hit") {
+      return "game end";
+    } 
+
+    if (this.model.checkFood() === "food hit") {
+      return "speed up";
+    } 
+
     this.draw();
+
+    return null;
   }
 
   draw() {
@@ -70,5 +79,17 @@ export default class BoardController {
 
   getScore() {
     return this.model.score;
+  }
+
+  log() {
+    // Head
+    console.log("Head:")
+    console.log(this.model.sanke.head.x, this.model.sanke.head.y);
+
+    // Parts
+    console.log("Parts: ");
+    for (let i = 0; i < this.model.sanke.parts.length - 1; i++) {
+      console.log(i, this.model.sanke.parts[i].x, this.model.sanke.parts[i].y);
+    }
   }
 }

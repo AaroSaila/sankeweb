@@ -19,14 +19,16 @@ export default class Sanke {
   }
 
   move() {
+    this.movePartOrHead(this.head);
     this.parts.forEach(part => {
-      // console.log("about to move part:");
-      // console.log(part);
       this.movePartOrHead(part);
       this.processOrders(part);
     });
-    this.movePartOrHead(this.head);
-  }
+    if (this.checkTailCollision(this.head.x, this.head.y)) {
+      console.log("tail hit");
+      return "tail hit";
+    }
+      }
 
   movePartOrHead(part) {
     switch (part.dir) {
@@ -63,20 +65,15 @@ export default class Sanke {
       dir: dir,
       delay: delay
     });
-    // console.log("added order", dir, delay)
   }
 
   processOrders(part) {
-    // console.log("processing orders for part:")
-    // console.log(this);
     if (part.orders.length === 0) {
       return;
     }
 
-    // console.log("orders processing")
     part.orders.forEach(order => {
       order.delay = order.delay <= 0 ? 0 : order.delay - 1;
-      // console.log(order);
     });
 
     if (part.orders[0].delay <= 0) {
@@ -136,8 +133,10 @@ export default class Sanke {
   }
 
   checkTailCollision(x, y) {
-    for (let i = 0; i < this.parts.length - 1; i++) {
-      if (this.parts[0].x === x && this.parts[0].y === y) {
+    for (let i = 0; i < this.parts.length; i++) {
+      if (this.parts[i].x === x && this.parts[i].y === y) {
+        console.log("part x", this.parts[i].x, "part y", this.parts[i].y);
+        console.log("checked x", x, "checked y", y);
         return true;
       }
     }

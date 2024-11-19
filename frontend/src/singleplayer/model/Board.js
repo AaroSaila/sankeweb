@@ -6,6 +6,8 @@ import Sanke from "./Sanke.js";
 export default class Board {
   constructor(entitySize, boardWidth, boardHeight) {
     this.entitySize = entitySize;
+    this.w = boardWidth;
+    this.h = boardHeight;
 
     this.sanke = new Sanke(
       this,
@@ -27,7 +29,9 @@ export default class Board {
   }
 
   moveSanke() {
-    this.sanke.move();
+    if (this.sanke.move() === "tail hit") {
+      return "tail hit";
+    };
   }
 
   checkFoodCollision() {
@@ -53,7 +57,7 @@ export default class Board {
         && newX !== this.sanke.head.x
       ) {
         // console.log("generating number")
-        newX = parseInt(Math.random() * 1000 % 600);
+        newX = parseInt(Math.random() * 1000 % this.w);
       }
 
       while (
@@ -61,16 +65,16 @@ export default class Board {
         && newY !== this.sanke.head.y
       ) {
         // console.log("generating number")
-        newY = parseInt(Math.random() * 1000 % 600);
+        newY = parseInt(Math.random() * 1000 % this.h);
       }
 
       if (this.sanke.checkTailCollision(newX, newY)) {
         while (
           newY % this.entitySize !== 0
-          && newY !== this.sanke.head.y
+          && newY === this.sanke.head.y
         ) {
           // console.log("generating number")
-          newY = parseInt(Math.random() * 1000 % 600);
+          newY = parseInt(Math.random() * 1000 % this.h);
         }
       }
 
@@ -78,6 +82,7 @@ export default class Board {
       this.food.y = newY;
 
       this.score++;
+      return "food hit";
     }
   }
 

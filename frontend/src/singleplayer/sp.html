@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="../styles.css"/>
-    <link rel="stylesheet" href="./sp.css"/>
-    <script type="module" src="sp.js" defer></script>
-    <title>Sankeweb-sp</title>
-  </head>
-  <body>
-    <h1>Sankeweb</h1>
-    <div id="game">
-      <div id="game-bar">
+
+<head>
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="./sp.css" />
+  <script type="module" src="sp.js" defer></script>
+  <title>Sankeweb-sp</title>
+</head>
+
+<body>
+  <h1>Sankeweb</h1>
+  <div id="game">
+    <div id="game-bar">
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+    </div>
+    <div id="canvas-stat-bar-container">
+      <div id="stat-bar">
         <span>Score: <span id="score"></span></span>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
       </div>
       <canvas id="board" width=600 height=600></canvas>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
