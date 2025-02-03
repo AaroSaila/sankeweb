@@ -1,101 +1,57 @@
-"use strict";
-
-import BoardController from "./controller/BoardController.js";
+import BoardDrawer from "./BoardDrawer.js";
 
 
-const gameLoop = (board, keyQueue, tickMs) => {
-  console.log("game speed", tickMs);
-  let gameEnds = false;
-  // console.log(keyQueue)
-
-  switch (keyQueue.shift()) {
-    case "w":
-      board.changeSankeDirection("u");
-      break;
-    case "d":
-      board.changeSankeDirection("r");
-      break;
-    case "s":
-      board.changeSankeDirection("d");
-      break;
-    case "a":
-      board.changeSankeDirection("l");
-      break;
-    case "end":
-      gameEnds = true;
-      break;
-  }
-
-  const gameEvent = board.tick();
-
-  switch (gameEvent) {
-    case "game end":
-      gameEnds = true;
-      break;
-    case "speed up":
-      tickMs = Math.ceil(tickMs * 0.95);
-      break;
-  }
-
-  const score = board.getScore();
-  if (score > scoreSpan.textContent) {
-    scoreSpan.textContent = score;
-  }
-
-  if (gameEnds) {
-    return;
-  }
-
-  return setTimeout(() => gameLoop(board, keyQueue, tickMs), tickMs);
-}
-
-
+const startButton = document.getElementById("start");
+const canvas = document.getElementById("board");
 const scoreSpan = document.getElementById("score");
+const INPUT_KEYS = ['w', 'a', 's', 'd'];
 
-const board = new BoardController(
-  document.getElementById("board"),
-  "#3d3d3d",
+let game = {};
+const keyQueue = [];
+let ws = null;
+const boardDrawer = new BoardDrawer(
+  canvas.getContext("2d"),
+  canvas.width,
+  canvas.height,
   20
 );
 
-const keyQueue = [];
-
-const startButton = document.getElementById("start");
-
 startButton.addEventListener("click", () => {
-  startButton.classList.add("disabled");
-
-  gameLoop(board, keyQueue, 100);
-
-  scoreSpan.textContent = "0";
-
-  document.addEventListener("keypress", (e) => {
-    keyQueue.push(e.key);
-  })
-
-  document.getElementById("stop").addEventListener("click", () => keyQueue.push("end"));
+  ws = new WebSocket("ws://localhost:8080/sp");
+  ws.onmessage = event => {
+    const msg = JSON.parse(event.data);
+    console.log(msg);
+    if (msg.msgType === "gamestate") {
+      game = msg.game;
+      boardDrawer.draw(game.board);
+      scoreSpan.textContent = game.score;
+    } else if (msg.msgType === "text") {
+      console.log("From ws: " + msg.text);
+    }
+  };
+  startButton.style.display = "none";
 });
 
+// Add button press to event queue
+window.addEventListener("keydown", event => {
+  if (INPUT_KEYS.includes(event.key)) {
+    keyQueue.push(event.key);
+  }
 
-// document.addEventListener("keypress", e => {
-//   if (e.key === " ") {
-//     board.log();
+  while (keyQueue.length > 0) {
+    ws.send(JSON.stringify({
+      gameId: game.id,
+      key: keyQueue.shift()
+    }))
+  }
+})
+
+// Send by button press
+// window.addEventListener("keydown", event => {
+//   if (INPUT_KEYS.includes(event.key)) {
+//     ws.send(JSON.stringify({
+//       gameId: game.id,
+//       key: event.key
+//     }))
 //   }
-//   if (e.key === "Enter") {
-//     gameLoop(board, keyQueue, null);
-//   }
-//   switch (e.key) {
-//     case "w":
-//       board.changeSankeDirection("u");
-//       break;
-//     case "d":
-//       board.changeSankeDirection("r");
-//       break;
-//     case "s":
-//       board.changeSankeDirection("d");
-//       break;
-//     case "a":
-//       board.changeSankeDirection("l");
-//       break;
-//   }
-// });
+// })

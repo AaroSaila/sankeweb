@@ -3,7 +3,7 @@ body {
   color: white;
 }
 
-a {
+.button-link {
   text-decoration: none;
   color: white;
   border-radius: 5px;
@@ -11,11 +11,19 @@ a {
   background-color: hsla(207 100% 43% / 0.84);
 }
 
-a:hover {
+.button-link:hover {
   background-color: hsla(207 100% 33% / 0.84);
 
 }
 
-a:visited {
+.button-link:visited {
   color: white;
+}
+
+.title-link {
+  text-decoration: none;
+}
+
+.title-link:visited {
+  color: inherit;
 }
