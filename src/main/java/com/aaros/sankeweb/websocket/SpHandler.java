@@ -21,13 +21,17 @@ public class SpHandler extends TextWebSocketHandler {
   private final HashMap<String, SpGameController> games = new HashMap<>();
   private final ArrayList<WebSocketSession> sessions = new ArrayList<>();
 
-  @Scheduled(fixedRate = 500)
+  @Scheduled(fixedRate = 100)
   public void sendGameState() throws IOException {
     if (sessions.isEmpty()) {
       return;
     }
     for (WebSocketSession session : sessions) {
       SpGameController game = games.get(session.getId());
+      if (game == null) {
+        return;
+      }
+
       game.tick();
 
       SpGameStateMessage msg = new SpGameStateMessage(game);
@@ -41,7 +45,7 @@ public class SpHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     sessions.add(session);
-    SpGameController game = new SpGameController(session.getId());
+    SpGameController game = new SpGameController(session.getId(), 500);
     games.put(session.getId(), game);
 
     String json = mapper.writeValueAsString(game);

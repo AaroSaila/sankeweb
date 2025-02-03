@@ -10,12 +10,16 @@ public class SpGameController {
   private final Board board;
   private int score;
   private char key;
+  private long lastTickTime;
+  private int tickRate;
 
-  public SpGameController(String id) {
+  public SpGameController(String id, int tickRate) {
     this.id = id;
     this.board = new Board();
     this.score = 0;
     this.key = 'w';
+    this.lastTickTime = 0;
+    this.tickRate = tickRate;
   }
 
   public void handleKey() {
@@ -38,11 +42,14 @@ public class SpGameController {
   }
 
   public void tick() {
-    this.handleKey();
-    this.board.moveSanke();
-    if (this.board.checkFoodCollision()) {
-      this.score++;
-      this.board.newFood();
+    if (System.currentTimeMillis() - lastTickTime >= tickRate) {
+      this.handleKey();
+      this.board.moveSanke();
+      if (this.board.checkFoodCollision()) {
+        this.score++;
+        this.board.newFood();
+      }
+      this.lastTickTime = System.currentTimeMillis();
     }
   }
 
@@ -68,5 +75,21 @@ public class SpGameController {
 
   public void setScore(int score) {
     this.score = score;
+  }
+
+  public long getLastTickTime() {
+    return lastTickTime;
+  }
+
+  public void setLastTickTime(long lastTickTime) {
+    this.lastTickTime = lastTickTime;
+  }
+
+  public int getTickRate() {
+    return tickRate;
+  }
+
+  public void setTickRate(int tickRate) {
+    this.tickRate = tickRate;
   }
 }
