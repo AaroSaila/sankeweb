@@ -26,6 +26,12 @@ export default class BoardDrawer {
 
   drawSanke(board) {
     this.drawRect(board.sanke.x, board.sanke.y, this.sankeColor);
+
+    for (let i = 0; i < board.sanke.parts.length; i++) {
+      const x = board.sanke.parts[i].x;
+      const y = board.sanke.parts[i].y;
+      this.drawRect(x, y, this.sankeColor);
+    }
   }
 
   drawFood(board) {

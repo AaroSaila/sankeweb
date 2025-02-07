@@ -8,14 +8,45 @@ public class Board {
 
   private final Random rand;
 
-  public final static int ENTITYSIZE = 20;
-  public final static int WIDTH = 600;
-  public final static int HEIGHT = 600;
+  protected final static int ENTITYSIZE = 20;
+  protected final static int WIDTH = 600;
+  protected final static int HEIGHT = 600;
 
   public Board() {
     this.sanke = new Sanke();
     this.food = new Food();
     this.rand = new Random();
+  }
+
+  protected static int[] movePart(Direction dir, int x, int y) {
+    switch (dir) {
+      case UP:
+        y -= Board.ENTITYSIZE;
+        if (y < 0) {
+          y = Board.HEIGHT - Board.ENTITYSIZE;
+        }
+        break;
+      case DOWN:
+        y += Board.ENTITYSIZE;
+        if (y > Board.HEIGHT - Board.ENTITYSIZE) {
+          y = 0;
+        }
+        break;
+      case LEFT:
+        x -= Board.ENTITYSIZE;
+        if (x < 0) {
+          x = Board.WIDTH - Board.ENTITYSIZE;
+        }
+        break;
+      case RIGHT:
+        x += Board.ENTITYSIZE;
+        if (x > Board.WIDTH - Board.ENTITYSIZE) {
+          x = 0;
+        }
+        break;
+    }
+
+    return new int[]{x, y};
   }
 
   public void moveSanke() {
@@ -24,6 +55,10 @@ public class Board {
 
   public boolean checkFoodCollision() {
     return this.sanke.getX() == this.food.getX() && this.sanke.getY() == this.food.getY();
+  }
+
+  public void addSankePart() {
+    sanke.addPart();
   }
 
   public void newFood() {

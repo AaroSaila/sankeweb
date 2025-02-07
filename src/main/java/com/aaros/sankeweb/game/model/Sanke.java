@@ -2,6 +2,7 @@ package com.aaros.sankeweb.game.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.aaros.sankeweb.game.model.Direction.*;
 
@@ -19,26 +20,88 @@ public class Sanke {
     this.parts = new ArrayList<>();
   }
 
-  public void changeDirection(Direction dir) {
-    this.dir = dir;
+  public void changeDirection(Direction newDir) {
+    dir = newDir;
+
+    if (!parts.isEmpty()) {
+      for (SankePart part : parts) {
+        part.addOrder(newDir);
+      }
+    }
   }
 
   public void move() {
-    switch (dir) {
-      case UP:
-        this.y -= Board.ENTITYSIZE;
-        break;
-      case DOWN:
-        this.y += Board.ENTITYSIZE;
-        break;
-      case LEFT:
-        this.x -= Board.ENTITYSIZE;
-        break;
-      case RIGHT:
-        this.x += Board.ENTITYSIZE;
-        break;
+    int[] newCoords = Board.movePart(dir, x, y);
+    x = newCoords[0];
+    y = newCoords[1];
+
+    for (SankePart part : parts) {
+      part.move();
     }
   }
+
+  public void addPart() {
+    int lastX = -1;
+    int lastY = -1;
+    Direction lastDir;
+    ArrayList<Order> orders;
+
+    try {
+      SankePart lastPart = parts.getLast();
+      lastX = lastPart.getX();
+      lastY = lastPart.getY();
+      lastDir = lastPart.getDir();
+      orders = new ArrayList<>();
+      for (Order order : lastPart.getOrders()) {
+        Order newOrder = new Order(order.getDir(), order.getDelay());
+        orders.add(newOrder);
+      }
+    } catch (NoSuchElementException e) {
+      lastX = this.x;
+      lastY = this.y;
+      lastDir = dir;
+      orders = new ArrayList<>();
+    }
+
+    int x = -1;
+    int y = -1;
+
+    switch (lastDir) {
+      case UP:
+        y = lastY + Board.ENTITYSIZE;
+        x = lastX;
+        if (y > Board.HEIGHT - Board.ENTITYSIZE) {
+          y = 0;
+        }
+        break;
+      case DOWN:
+        y = lastY - Board.ENTITYSIZE;
+        x = lastX;
+        if (y < 0) {
+          y = Board.HEIGHT - Board.ENTITYSIZE;
+        }
+        break;
+      case LEFT:
+        x = lastX + Board.ENTITYSIZE;
+        y = lastY;
+        if (x > Board.WIDTH - Board.ENTITYSIZE) {
+          x = 0;
+        }
+        break;
+      case RIGHT:
+        x = lastX - Board.ENTITYSIZE;
+        y = lastY;
+        if (x < 0) {
+          x = Board.WIDTH - Board.ENTITYSIZE;
+        }
+        break;
+    }
+
+    SankePart newPart = new SankePart(x, y, parts.size(), lastDir, orders);
+    parts.add(newPart);
+  }
+
+  // Getters and setters
 
   public int getX() {
     return x;

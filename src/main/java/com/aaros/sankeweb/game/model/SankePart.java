@@ -6,22 +6,45 @@ import java.util.List;
 public class SankePart {
   private int x;
   private int y;
+  private final int index;
   private Direction dir;
   private final List<Order> orders;
 
-  public SankePart(int x, int y, Direction dir) {
+  public SankePart(int x, int y, int index, Direction dir, List<Order> orders) {
     this.x = x;
     this.y = y;
+    this.index = index;
     this.dir = dir;
-    this.orders = new ArrayList<>();
+    this.orders = orders;
   }
 
   public SankePart() {
     this.x = -1;
     this.y = -1;
+    this.index = -1;
     this.dir = null;
     this.orders = new ArrayList<>();
   }
+
+  public void addOrder(Direction dir) {
+    orders.add(new Order(dir, index + 1));
+  }
+
+  public void move() {
+    if (orders.getFirst().getDelay() == 0) {
+      dir = orders.getFirst().getDir();
+      orders.removeFirst();
+    }
+    for (Order order : orders) {
+      order.decrementDelay();
+    }
+
+    int[] newCoords = Board.movePart(dir, x, y);
+    x = newCoords[0];
+    y = newCoords[1];
+  }
+
+  // Getters and setters
 
   public int getX() {
     return x;
@@ -49,5 +72,9 @@ public class SankePart {
 
   public List<Order> getOrders() {
     return orders;
+  }
+
+  public int getIndex() {
+    return index;
   }
 }

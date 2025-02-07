@@ -49,7 +49,6 @@ stopButton.addEventListener("click", () => {
 
 // Add button press to event queue
 window.addEventListener("keydown", event => {
-  console.log("Keydown")
   if (INPUT_KEYS.includes(event.key)) {
     keyQueue.push(event.key);
   }

@@ -38,13 +38,14 @@ public class SpGameController {
   }
 
   public void tick() {
-    handleKey();
     board.moveSanke();
     if (board.checkFoodCollision()) {
+      board.addSankePart();
       score++;
       board.newFood();
       tickRate += 10;
     }
+    handleKey();
   }
 
   public Board getBoard() {
