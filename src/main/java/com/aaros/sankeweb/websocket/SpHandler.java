@@ -2,65 +2,45 @@ package com.aaros.sankeweb.websocket;
 
 import com.aaros.sankeweb.game.controller.SpGameController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-@EnableScheduling
 @Controller
 public class SpHandler extends TextWebSocketHandler {
   private final ObjectMapper mapper = new ObjectMapper();
-  private final HashMap<String, SpGameController> games = new HashMap<>();
-  private final ArrayList<WebSocketSession> sessions = new ArrayList<>();
-
-  @Scheduled(fixedRate = 100)
-  public void sendGameState() throws IOException {
-    if (sessions.isEmpty()) {
-      return;
-    }
-    for (WebSocketSession session : sessions) {
-      SpGameController game = games.get(session.getId());
-      if (game == null) {
-        return;
-      }
-
-      game.tick();
-
-      SpGameStateMessage msg = new SpGameStateMessage(game);
-
-      String json = mapper.writeValueAsString(msg);
-
-      session.sendMessage(new TextMessage(json));
-    }
-  }
+  private final HashMap<String, SpGameStateSender> gameSenders = new HashMap<>();
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-    sessions.add(session);
-    SpGameController game = new SpGameController(session.getId(), 500);
-    games.put(session.getId(), game);
+    System.out.println("Connection " + session.getId() + " is opened");
+    SpGameStateSender sender = new SpGameStateSender(session, 500);
+    gameSenders.put(session.getId(), sender);
 
-    String json = mapper.writeValueAsString(game);
+    String json = mapper.writeValueAsString(sender.getGame());
 
     session.sendMessage(new TextMessage(json));
+
+    sender.start();
   }
 
   @Override
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     SpInboundMessage msg = mapper.readValue(message.getPayload(), SpInboundMessage.class);
-    SpGameController game = games.get(session.getId());
+    SpGameController game = gameSenders.get(session.getId()).getGame();
+
+    if (msg.getKey() == 'e') {
+      session.close();
+      return;
+    }
 
     game.setKey(msg.getKey());
 
-    SpTextMessage msgOut = new SpTextMessage(game.getId(), "Key changed to: " + game.getKey());
+    SpTextMessage msgOut = new SpTextMessage(session.getId(), "Key changed to: " + game.getKey());
 
     String json = mapper.writeValueAsString(msgOut);
 
@@ -69,6 +49,7 @@ public class SpHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-    sessions.removeIf(session2 -> session2.getId().equals(session.getId()));
+    System.out.println("Connection " + session.getId() + " is closed");
+    gameSenders.remove(session.getId());
   }
 }

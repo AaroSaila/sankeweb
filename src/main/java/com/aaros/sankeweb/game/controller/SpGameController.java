@@ -6,19 +6,15 @@ import com.aaros.sankeweb.game.model.Sanke;
 import static com.aaros.sankeweb.game.model.Direction.*;
 
 public class SpGameController {
-  private final String id;
   private final Board board;
   private int score;
   private char key;
-  private long lastTickTime;
   private int tickRate;
 
-  public SpGameController(String id, int tickRate) {
-    this.id = id;
+  public SpGameController(int tickRate) {
     this.board = new Board();
     this.score = 0;
     this.key = 'w';
-    this.lastTickTime = 0;
     this.tickRate = tickRate;
   }
 
@@ -42,23 +38,17 @@ public class SpGameController {
   }
 
   public void tick() {
-    if (System.currentTimeMillis() - lastTickTime >= tickRate) {
-      this.handleKey();
-      this.board.moveSanke();
-      if (this.board.checkFoodCollision()) {
-        this.score++;
-        this.board.newFood();
-      }
-      this.lastTickTime = System.currentTimeMillis();
+    handleKey();
+    board.moveSanke();
+    if (board.checkFoodCollision()) {
+      score++;
+      board.newFood();
+      tickRate += 10;
     }
   }
 
   public Board getBoard() {
     return board;
-  }
-
-  public String getId() {
-    return id;
   }
 
   public int getScore() {
@@ -75,14 +65,6 @@ public class SpGameController {
 
   public void setScore(int score) {
     this.score = score;
-  }
-
-  public long getLastTickTime() {
-    return lastTickTime;
-  }
-
-  public void setLastTickTime(long lastTickTime) {
-    this.lastTickTime = lastTickTime;
   }
 
   public int getTickRate() {
