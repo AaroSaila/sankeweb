@@ -21,6 +21,13 @@ public class Sanke {
   }
 
   public void changeDirection(Direction newDir) {
+    if (
+        (newDir == LEFT || newDir == RIGHT) && (dir == LEFT || dir == RIGHT)
+        || (newDir == UP || newDir == DOWN) && (dir == UP || dir == DOWN)
+    ) {
+      return;
+    }
+
     dir = newDir;
 
     if (!parts.isEmpty()) {
