@@ -5,6 +5,7 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const canvas = document.getElementById("board");
 const scoreSpan = document.getElementById("score");
+const speedSpan = document.getElementById("speed");
 const INPUT_KEYS = ['w', 'a', 's', 'd', 'e'];
 
 let game = {};
@@ -21,11 +22,12 @@ startButton.addEventListener("click", () => {
   ws = new WebSocket("ws://localhost:8080/sp");
   ws.onmessage = event => {
     const msg = JSON.parse(event.data);
-    // console.log(msg);
+    console.log(msg);
     if (msg.msgType === "gamestate") {
       game = msg.game;
       boardDrawer.draw(game.board);
       scoreSpan.textContent = game.score;
+      speedSpan.textContent = game.tickRate;
     } else if (msg.msgType === "text") {
       // console.log("From ws: " + msg.text);
     }
