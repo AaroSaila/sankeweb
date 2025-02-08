@@ -31,7 +31,7 @@ public class SankePart {
   }
 
   public void move() {
-    if (orders.getFirst().getDelay() == 0) {
+    if (!orders.isEmpty() && orders.getFirst().getDelay() == 0) {
       dir = orders.getFirst().getDir();
       orders.removeFirst();
     }
