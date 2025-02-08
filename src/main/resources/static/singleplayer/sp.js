@@ -21,13 +21,13 @@ startButton.addEventListener("click", () => {
   ws = new WebSocket("ws://localhost:8080/sp");
   ws.onmessage = event => {
     const msg = JSON.parse(event.data);
-    console.log(msg);
+    // console.log(msg);
     if (msg.msgType === "gamestate") {
       game = msg.game;
       boardDrawer.draw(game.board);
       scoreSpan.textContent = game.score;
     } else if (msg.msgType === "text") {
-      console.log("From ws: " + msg.text);
+      // console.log("From ws: " + msg.text);
     }
   };
   startButton.style.display = "none";

@@ -21,6 +21,7 @@ public class SpGameStateSender extends Thread {
   @Override
   public void run() {
     while (true) {
+      long startTime = System.currentTimeMillis();
       if (!session.isOpen()) {
         return;
       }
@@ -29,17 +30,25 @@ public class SpGameStateSender extends Thread {
 
       SpGameStateMessage msg = new SpGameStateMessage(game);
 
-      try {
-        String json = mapper.writeValueAsString(msg);
-        session.sendMessage(new TextMessage(json));
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+      long totalTime = System.currentTimeMillis() - startTime;
+
+      if (totalTime < game.getTickRate()) {
+        try {
+          Thread.sleep(game.getTickRate() - totalTime);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
       }
 
-      try {
-        Thread.sleep(game.getTickRate());
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
+      if (session.isOpen()) {
+        try {
+          String json = mapper.writeValueAsString(msg);
+          synchronized (session) {
+            session.sendMessage(new TextMessage(json));
+          }
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
     }
   }
