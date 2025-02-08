@@ -41,8 +41,8 @@ public class Sanke {
   }
 
   public void addPart() {
-    int lastX = -1;
-    int lastY = -1;
+    int lastX;
+    int lastY;
     Direction lastDir;
     ArrayList<Order> orders;
 
@@ -53,7 +53,7 @@ public class Sanke {
       lastDir = lastPart.getDir();
       orders = new ArrayList<>();
       for (Order order : lastPart.getOrders()) {
-        Order newOrder = new Order(order.getDir(), order.getDelay());
+        Order newOrder = new Order(order.getDir(), order.getDelay() + 1);
         orders.add(newOrder);
       }
     } catch (NoSuchElementException e) {

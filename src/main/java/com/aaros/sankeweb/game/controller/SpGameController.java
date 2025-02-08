@@ -43,7 +43,7 @@ public class SpGameController {
       board.addSankePart();
       score++;
       board.newFood();
-      tickRate += 10;
+      tickRate -= 10;
     }
     handleKey();
   }

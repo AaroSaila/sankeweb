@@ -18,7 +18,7 @@ public class SpHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     System.out.println("Connection " + session.getId() + " is opened");
-    SpGameStateSender sender = new SpGameStateSender(session, 500);
+    SpGameStateSender sender = new SpGameStateSender(session, 100);
     gameSenders.put(session.getId(), sender);
 
     String json = mapper.writeValueAsString(sender.getGame());
@@ -44,7 +44,9 @@ public class SpHandler extends TextWebSocketHandler {
 
     String json = mapper.writeValueAsString(msgOut);
 
-    session.sendMessage(new TextMessage(json));
+    synchronized (session) {
+      session.sendMessage(new TextMessage(json));
+    }
   }
 
   @Override

@@ -65,13 +65,19 @@ public class Board {
     final int max_n = (WIDTH - ENTITYSIZE) / ENTITYSIZE;
 
     int n = this.rand.nextInt(max_n + 1);
-    this.food.setX((n - 1) * ENTITYSIZE);
+    if (n != 0) {
+      this.food.setX((n - 1) * ENTITYSIZE);
+    }
 
     do {
       n = this.rand.nextInt(max_n + 1);
     } while (n == this.food.getX());
-    this.food.setY((n - 1) * ENTITYSIZE);
+    if (n != 0) {
+      this.food.setY((n - 1) * ENTITYSIZE);
+    }
   }
+
+  // Getters and setters
 
   public Sanke getSanke() {
     return sanke;
