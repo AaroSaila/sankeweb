@@ -40,6 +40,7 @@ public class SpGameStateSender extends Thread {
             SpTextMessage msg = new SpTextMessage(GAME_OVER, session.getId(), "Game over");
             session.sendMessage(new TextMessage(mapper.writeValueAsString(msg)));
             session.close();
+            return;
           } catch (IOException e) {
             throw new RuntimeException(e);
           }
