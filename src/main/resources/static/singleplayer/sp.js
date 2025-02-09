@@ -20,17 +20,28 @@ const boardDrawer = new BoardDrawer(
 
 startButton.addEventListener("click", () => {
   ws = new WebSocket("ws://localhost:8080/sp");
-  ws.onmessage = event => {
-    const msg = JSON.parse(event.data);
-    console.log(msg);
-    if (msg.msgType === "gamestate") {
+
+  const messageFunctions = {
+    "GAMESTATE": msg => {
       game = msg.game;
       boardDrawer.draw(game.board);
       scoreSpan.textContent = game.score;
       speedSpan.textContent = game.tickRate;
-    } else if (msg.msgType === "text") {
-      // console.log("From ws: " + msg.text);
+    },
+    "KEY_CHANGE": msg => {
+      console.log(msg.text);
+    },
+    "GAME_OVER": _ => {
+      const gameOverSpan = document.createElement("span");
+      gameOverSpan.textContent = "Game Over!";
+      gameOverSpan.id = "game-over";
+      stopButton.insertAdjacentElement("beforebegin", gameOverSpan);
     }
+  };
+
+  ws.onmessage = event => {
+    const msg = JSON.parse(event.data);
+    messageFunctions[msg.msgType](JSON.parse(event.data));
   };
   startButton.style.display = "none";
 });

@@ -1,11 +1,17 @@
 package com.aaros.sankeweb.websocket;
 
 import com.aaros.sankeweb.game.controller.SpGameController;
+import com.aaros.sankeweb.game.controller.TickEvent;
+import com.aaros.sankeweb.websocket.messages.SpGameStateMessage;
+import com.aaros.sankeweb.websocket.messages.SpTextMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+
+import static com.aaros.sankeweb.game.controller.TickEvent.HIT_FOOD;
+import static com.aaros.sankeweb.websocket.messages.MessageType.GAME_OVER;
 
 public class SpGameStateSender extends Thread {
   private final WebSocketSession session;
@@ -26,7 +32,19 @@ public class SpGameStateSender extends Thread {
         return;
       }
 
-      game.tick();
+      TickEvent tick = game.tick();
+
+      if (tick == HIT_FOOD) {
+        synchronized (session) {
+          try {
+            SpTextMessage msg = new SpTextMessage(GAME_OVER, session.getId(), "Game over");
+            session.sendMessage(new TextMessage(mapper.writeValueAsString(msg)));
+            session.close();
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
 
       SpGameStateMessage msg = new SpGameStateMessage(game);
 

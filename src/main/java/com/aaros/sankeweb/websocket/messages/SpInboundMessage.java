@@ -1,4 +1,4 @@
-package com.aaros.sankeweb.websocket;
+package com.aaros.sankeweb.websocket.messages;
 
 public class SpInboundMessage {
   private final String gameId;

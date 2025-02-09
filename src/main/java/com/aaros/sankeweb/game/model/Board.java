@@ -53,6 +53,16 @@ public class Board {
     this.sanke.move();
   }
 
+  public boolean checkSankeCollision() {
+    for (SankePart part : sanke.getParts()) {
+      if (part.getX() == sanke.getX() && part.getY() == sanke.getY()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public boolean checkFoodCollision() {
     return this.sanke.getX() == this.food.getX() && this.sanke.getY() == this.food.getY();
   }
