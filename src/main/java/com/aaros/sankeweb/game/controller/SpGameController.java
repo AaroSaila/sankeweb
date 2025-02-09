@@ -3,6 +3,8 @@ package com.aaros.sankeweb.game.controller;
 import com.aaros.sankeweb.game.model.Board;
 import com.aaros.sankeweb.game.model.Sanke;
 
+import static com.aaros.sankeweb.game.controller.TickEvent.HIT_TAIL;
+import static com.aaros.sankeweb.game.controller.TickEvent.NONE;
 import static com.aaros.sankeweb.game.model.Direction.*;
 
 public class SpGameController {
@@ -37,15 +39,20 @@ public class SpGameController {
     }
   }
 
-  public void tick() {
+  public TickEvent tick() {
     board.moveSanke();
+    if (board.checkSankeCollision()) {
+      return HIT_TAIL;
+    }
     if (board.checkFoodCollision()) {
       board.addSankePart();
       score++;
       board.newFood();
-      tickRate -= 10;
+      tickRate -= 1;
     }
     handleKey();
+
+    return NONE;
   }
 
   public Board getBoard() {

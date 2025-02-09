@@ -51,3 +51,7 @@ button:hover {
   background-color: #3d3d3d;
   margin-top: 10px;
 }
+
+#game-over {
+  color: red;
+}

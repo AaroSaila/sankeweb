@@ -1,17 +1,19 @@
-package com.aaros.sankeweb.websocket;
+package com.aaros.sankeweb.websocket.messages;
 
 import com.aaros.sankeweb.game.controller.SpGameController;
 
+import static com.aaros.sankeweb.websocket.messages.MessageType.GAMESTATE;
+
 public class SpGameStateMessage {
-  private final String msgType;
+  private final MessageType msgType;
   private final SpGameController game;
 
   public SpGameStateMessage(SpGameController game) {
-    this.msgType = "gamestate";
+    this.msgType = GAMESTATE;
     this.game = game;
   }
 
-  public String getMsgType() {
+  public MessageType getMsgType() {
     return msgType;
   }
 
