@@ -1,0 +1,29 @@
+body {
+  background-color: #29282a;
+  color: white;
+}
+
+.button-link {
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: hsla(207 100% 43% / 0.84);
+}
+
+.button-link:hover {
+  background-color: hsla(207 100% 33% / 0.84);
+
+}
+
+.button-link:visited {
+  color: white;
+}
+
+.title-link {
+  text-decoration: none;
+}
+
+.title-link:visited {
+  color: inherit;
+}
