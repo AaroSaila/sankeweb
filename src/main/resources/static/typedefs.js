@@ -28,3 +28,11 @@
  * @property {number} x
  * @property {number} y
  */
+
+/**
+ * @typedef lobby
+ * @type {object}
+ * @property {number} lobbyId
+ * @property {array} players
+ * @property {string} msgType
+ */

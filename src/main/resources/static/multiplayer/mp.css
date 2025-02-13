@@ -13,6 +13,18 @@
   margin: 10px;
 }
 
+#lobby-id-input-div {
+  margin: 10px 0 10px 0;
+}
+
+#lobby-id-input-div label {
+  display: block;
+}
+
+.error-message {
+  color: red;
+}
+
 button {
   display: block;
   background-color: black;

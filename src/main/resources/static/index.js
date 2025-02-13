@@ -11,9 +11,13 @@ mpStartButton.addEventListener("click", () => {
   joinLobbyA.classList.add("button-link");
 
   createLobbyA.href = "./multiplayer/mp.html";
+  joinLobbyA.href = "./multiplayer/mp.html";
 
   createLobbyA.addEventListener("click", () => {
     sessionStorage.setItem("lobby", "create");
+  })
+  joinLobbyA.addEventListener("click", () => {
+    sessionStorage.setItem("lobby", "join");
   })
 
   document.body.appendChild(createLobbyA);

@@ -3,12 +3,12 @@ package com.aaros.sankeweb.websocket.messages;
 public class LobbyMessage {
   private final MessageType msgType;
   private final int lobbyId;
-  private final String sessionId;
+  private final String[] players;
 
-  public LobbyMessage(int lobbyId, String sessionId) {
-    msgType = MessageType.CREATE_LOBBY;
+  public LobbyMessage(int lobbyId, String[] players) {
+    msgType = MessageType.LOBBY;
     this.lobbyId = lobbyId;
-    this.sessionId = sessionId;
+    this.players = players;
   }
 
   // Getters and setters
@@ -17,8 +17,8 @@ public class LobbyMessage {
     return lobbyId;
   }
 
-  public String getSessionId() {
-    return sessionId;
+  public String[] getPlayers() {
+    return players;
   }
 
   public MessageType getMsgType() {
