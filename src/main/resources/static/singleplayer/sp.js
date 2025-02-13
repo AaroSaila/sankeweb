@@ -1,4 +1,5 @@
 import BoardDrawer from "./BoardDrawer.js";
+import ENV from "../env.js";
 
 
 const startButton = document.getElementById("start");
@@ -19,7 +20,7 @@ const boardDrawer = new BoardDrawer(
 );
 
 startButton.addEventListener("click", () => {
-  ws = new WebSocket("ws://localhost:8080/sp");
+  ws = new WebSocket(`ws://${ENV.host}/sp`);
   ws.onopen = () => {
     ws.send(JSON.stringify({
       type: "SP_START",

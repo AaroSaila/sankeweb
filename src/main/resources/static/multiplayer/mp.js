@@ -1,9 +1,11 @@
+import ENV from "../env.js";
+
 const create = sessionStorage.getItem("lobby") === "create";
 
 const lobbyIdSpan = document.getElementById("lobby-id");
 const playersDiv = document.getElementById("lobby-players");
 
-const ws = new WebSocket("ws://localhost:8080/sp");
+const ws = new WebSocket(`ws://${ENV.host}/sp`);
 ws.onopen = () => {
   if (create) {
     ws.send(JSON.stringify({
@@ -23,6 +25,7 @@ ws.onopen = () => {
         lobbyIdSpan.textContent = lobbyId;
 
         const playersList = document.createElement("ul");
+        playersList.id = "lobby-players-list";
         const playerLi = document.createElement("li");
         playerLi.textContent = sessionId;
         playersList.appendChild(playerLi);
