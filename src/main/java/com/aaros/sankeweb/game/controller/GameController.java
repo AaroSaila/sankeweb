@@ -7,13 +7,13 @@ import static com.aaros.sankeweb.game.controller.TickEvent.HIT_TAIL;
 import static com.aaros.sankeweb.game.controller.TickEvent.NONE;
 import static com.aaros.sankeweb.game.model.Direction.*;
 
-public class SpGameController {
+public class GameController {
   private final Board board;
   private int score;
   private char key;
   private int tickRate;
 
-  public SpGameController(int tickRate) {
+  public GameController(int tickRate) {
     this.board = new Board();
     this.score = 0;
     this.key = 'w';

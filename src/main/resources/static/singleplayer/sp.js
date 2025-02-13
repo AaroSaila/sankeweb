@@ -20,6 +20,12 @@ const boardDrawer = new BoardDrawer(
 
 startButton.addEventListener("click", () => {
   ws = new WebSocket("ws://localhost:8080/sp");
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "SP_START",
+      text: ""
+    }));
+  }
 
   const messageFunctions = {
     "GAMESTATE": msg => {
@@ -28,7 +34,7 @@ startButton.addEventListener("click", () => {
       scoreSpan.textContent = game.score;
       speedSpan.textContent = game.tickRate;
     },
-    "KEY_CHANGE": msg => {
+    "SP_KEY_CHANGE": msg => {
       console.log(msg.text);
     },
     "GAME_OVER": _ => {
@@ -49,8 +55,8 @@ startButton.addEventListener("click", () => {
 const emptyKeyQueue = () => {
   while (keyQueue.length > 0) {
     ws.send(JSON.stringify({
-      gameId: game.id,
-      key: keyQueue.shift()
+      type: "SP_KEY_CHANGE",
+      text: keyQueue.shift()
     }))
   }
 };

@@ -1,6 +1,6 @@
 package com.aaros.sankeweb.websocket;
 
-import com.aaros.sankeweb.game.controller.SpGameController;
+import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.game.controller.TickEvent;
 import com.aaros.sankeweb.websocket.messages.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SpTextMessage;
@@ -15,12 +15,12 @@ import static com.aaros.sankeweb.websocket.messages.MessageType.GAME_OVER;
 
 public class SpGameStateSender extends Thread {
   private final WebSocketSession session;
-  private final SpGameController game;
+  private final GameController game;
   private final ObjectMapper mapper;
 
   SpGameStateSender(WebSocketSession session, int tickRate) {
     this.session = session;
-    this.game = new SpGameController(tickRate);
+    this.game = new GameController(tickRate);
     this.mapper = new ObjectMapper();
   }
 
@@ -37,7 +37,7 @@ public class SpGameStateSender extends Thread {
       if (tick == HIT_TAIL) {
         synchronized (session) {
           try {
-            SpTextMessage msg = new SpTextMessage(GAME_OVER, session.getId(), "Game over");
+            SpTextMessage msg = new SpTextMessage(GAME_OVER, "Game over");
             session.sendMessage(new TextMessage(mapper.writeValueAsString(msg)));
             session.close();
             return;
@@ -76,7 +76,7 @@ public class SpGameStateSender extends Thread {
     return session;
   }
 
-  public SpGameController getGame() {
+  public GameController getGame() {
     return game;
   }
 
