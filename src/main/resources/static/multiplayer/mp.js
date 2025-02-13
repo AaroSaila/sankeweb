@@ -3,9 +3,11 @@ import Globals from "../globals.js";
 const create = sessionStorage.getItem("lobby") === "create";
 const join = sessionStorage.getItem("lobby") === "join";
 
+const lobbyDiv = document.getElementById("lobby-div");
 const lobbyIdSpan = document.getElementById("lobby-id");
 const playersList = document.getElementById("lobby-players-list");
 const idInputdiv = document.getElementById("lobby-id-input-div");
+const gameDiv = document.getElementById("game-div");
 
 const populatePlayers = players => {
   let lastPlayerNode = playersList.lastChild;
@@ -40,6 +42,16 @@ ws.onopen = () => {
         populatePlayers(lobby.players);
       }
     }
+
+    const startGameButton = document.createElement("button");
+    startGameButton.textContent = "Start";
+    lobbyDiv.appendChild(startGameButton);
+
+    startGameButton.addEventListener("click", () => {
+      lobbyDiv.classList.add("disabled");
+      gameDiv.classList.remove("disabled");
+    });
+
   } else if (join) {
     const labelLabel = document.createElement("label");
     labelLabel.textContent = "Enter lobby ID";

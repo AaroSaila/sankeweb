@@ -1,5 +1,5 @@
 .disabled {
-  display: none;
+  display: none !important;
 }
 
 #lobby-players {
@@ -38,7 +38,7 @@ button:hover {
   cursor: pointer;
 }
 
-#game {
+#game-div {
   display: flex;
   margin-top: 80px;
 }
