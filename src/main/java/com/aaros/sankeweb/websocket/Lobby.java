@@ -32,4 +32,10 @@ public class Lobby {
     senders.put(address, new SpGameStateSender(newPlayerSession, 100));
     sessions.put(address, newPlayerSession);
   }
+
+  public void startGame() {
+    for (SpGameStateSender sender : senders.values()) {
+      sender.start();
+    }
+  }
 }

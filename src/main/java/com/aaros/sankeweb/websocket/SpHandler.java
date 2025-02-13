@@ -49,6 +49,9 @@ public class SpHandler extends TextWebSocketHandler {
       case JOIN_LOBBY:
         handleJoinLobby(session, msg);
         break;
+      case MP_START:
+        handleMpStart(msg);
+        break;
     }
   }
 
@@ -126,6 +129,14 @@ public class SpHandler extends TextWebSocketHandler {
         s.sendMessage(new TextMessage(json));
       }
     }
+  }
+
+  private void handleMpStart(InboundMessage msg) throws IOException {
+    int lobbyId = Integer.parseInt(msg.getText());
+
+    Lobby lobby = mpLobbies.get(lobbyId);
+
+    lobby.startGame();
   }
 
   @Override
