@@ -3,6 +3,31 @@ body {
   color: white;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.error-message {
+  color: red;
+}
+
+button {
+  display: block;
+  background-color: black;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 5px;
+}
+
+button:hover {
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+#lobby-buttons {
+  display: inline;
+}
+
 .button-link {
   text-decoration: none;
   color: white;
@@ -13,7 +38,6 @@ body {
 
 .button-link:hover {
   background-color: hsla(207 100% 33% / 0.84);
-
 }
 
 .button-link:visited {

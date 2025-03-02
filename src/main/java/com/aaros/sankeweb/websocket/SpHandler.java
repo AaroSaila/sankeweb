@@ -5,7 +5,6 @@ import com.aaros.sankeweb.websocket.messages.InboundMessage;
 import com.aaros.sankeweb.websocket.messages.LobbyMessage;
 import com.aaros.sankeweb.websocket.messages.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SpTextMessage;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
@@ -112,6 +111,7 @@ public class SpHandler extends TextWebSocketHandler {
     }
 
     Lobby lobby = mpLobbies.get(lobbyId);
+    System.out.println(mpLobbies.toString());
     if (lobby == null) {
       SpTextMessage textMsg = new SpTextMessage(ERROR, "No lobby found");
       String json = mapper.writeValueAsString(textMsg);

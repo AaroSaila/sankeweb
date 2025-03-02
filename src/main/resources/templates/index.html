@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/styles.css"/>
+    <link rel="stylesheet" href="/multiplayer/mp.css"/>
+    <link rel="stylesheet" href="/singleplayer/sp.css"/>
+    <script src="/index.js" type="module" defer></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <title>Sankeweb</title>
+  </head>
+  <body>
+    <h1>Sankeweb</h1>
+    <div id="view">
+      <a id="sp-button" class="button-link" hx-get="/sp" hx-target="#view">Singleplayer</a>
+      <a id="mp-button" class="button-link">Multiplayer</a>
+      <div id="lobby-buttons" class="hidden">
+        <a id="create-lobby-button" class="button-link" hx-get="/mp?join=false" hx-target="#view">Create Lobby</a>
+        <a id="join-lobby-button" class="button-link" hx-get="/mp?join=true" hx-target="#view">Join Lobby</a>
+      </div>
+    </div>
+  </body>
+</html>
