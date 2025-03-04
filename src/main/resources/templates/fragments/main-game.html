@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<div th:fragment="main-game" id="main-game">
+  <div id="game-bar">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+  </div>
+  <div id="canvas-stat-bar-container">
+    <div id="stat-bar">
+      <span>Score: <span id="main-score"></span></span>
+      <span>Speed: <span id="main-speed"></span></span>
+    </div>
+    <canvas id="main-board" width=600 height=600></canvas>
+  </div>
+</div>
+</html>

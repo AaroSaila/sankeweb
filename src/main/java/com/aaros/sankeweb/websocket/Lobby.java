@@ -27,6 +27,14 @@ public class Lobby {
     return sessions.keySet().toArray(new String[0]);
   }
 
+  public boolean hasPlayer(String address) {
+    return sessions.containsKey(address);
+  }
+
+  public int getPlayerCount() {
+    return sessions.size();
+  }
+
   public void addPlayer(WebSocketSession newPlayerSession) {
     String address = Objects.requireNonNull(newPlayerSession.getRemoteAddress()).getAddress().getHostAddress();
     senders.put(address, new SpGameStateSender(newPlayerSession, 100));

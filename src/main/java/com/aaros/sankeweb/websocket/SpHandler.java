@@ -1,11 +1,13 @@
 package com.aaros.sankeweb.websocket;
 
+import com.aaros.sankeweb.LobbyRepository;
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.websocket.messages.InboundMessage;
 import com.aaros.sankeweb.websocket.messages.LobbyMessage;
 import com.aaros.sankeweb.websocket.messages.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SpTextMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,6 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.aaros.sankeweb.websocket.messages.MessageType.ERROR;
@@ -21,10 +24,17 @@ import static com.aaros.sankeweb.websocket.messages.MessageType.SP_KEY_CHANGE;
 
 @Controller
 public class SpHandler extends TextWebSocketHandler {
-  private final ObjectMapper mapper = new ObjectMapper();
-  private final HashMap<String, SpGameStateSender> spGameSenders = new HashMap<>();
-  private final HashMap<Integer, Lobby> mpLobbies = new HashMap<>();
-  private int lobbyIdCounter = 0;
+  private final ObjectMapper mapper;
+  private final Map<String, SpGameStateSender> spGameSenders;
+  private final LobbyRepository mpLobbies;
+  private int lobbyIdCounter;
+
+  public SpHandler(LobbyRepository lobbyRepository) {
+    this.mapper = new ObjectMapper();
+    this.spGameSenders = new HashMap<>();
+    this.mpLobbies = lobbyRepository;
+    this.lobbyIdCounter = 0;
+  }
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {

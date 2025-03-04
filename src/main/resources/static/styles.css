@@ -51,3 +51,46 @@ button:hover {
 .title-link:visited {
   color: inherit;
 }
+
+#main-game {
+  display: flex;
+  margin-top: 80px;
+}
+
+#canvas-stat-bar-container {
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid white; */
+}
+
+#game-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 300px;
+  height: auto;
+  /* border: 1px solid white; */
+  padding: 10px;
+}
+
+#stat-bar {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  gap: 5px;
+  /* border: 1px solid red; */
+}
+
+#main-board {
+  position: relative;
+  background-color: #3d3d3d;
+  margin-top: 10px;
+}
+
+.other-board {
+  position: relative;
+  background-color: #3d3d3d;
+  margin-top: 10px;
+}

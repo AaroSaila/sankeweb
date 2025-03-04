@@ -1,8 +1,8 @@
-import Globals from "../globals.js";
+import Env from "../env.js"
 import replacePlayers from "./replacePlayers.js";
 
 
-const ws = new WebSocket(Globals.ws);
+const ws = new WebSocket(Env.ws);
 
 const joinBtn = document.getElementById("lobby-join-button");
 const idInput = document.getElementById("lobby-id-input");

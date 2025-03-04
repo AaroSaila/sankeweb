@@ -1,12 +1,12 @@
 import BoardDrawer from "../utils/BoardDrawer.js";
-import Globals from "../globals.js";
+import Env from "../env.js";
 
 
 const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
-const canvas = document.getElementById("board");
-const scoreSpan = document.getElementById("score");
-const speedSpan = document.getElementById("speed");
+const canvas = document.getElementById("main-board");
+const scoreSpan = document.getElementById("main-score");
+const speedSpan = document.getElementById("main-speed");
 const INPUT_KEYS = ['w', 'a', 's', 'd', 'e'];
 
 let game = {};
@@ -20,7 +20,7 @@ const boardDrawer = new BoardDrawer(
 );
 
 startButton.addEventListener("click", () => {
-  ws = new WebSocket(Globals.ws);
+  ws = new WebSocket(Env.ws);
   ws.onopen = () => {
     ws.send(JSON.stringify({
       type: "SP_START",

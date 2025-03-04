@@ -1,7 +1,7 @@
-import Globals from "../globals.js"
+import Env from "../env.js"
 import replacePlayers from "./replacePlayers.js";
 
-const ws = new WebSocket(Globals.ws);
+const ws = new WebSocket(Env.ws);
 ws.onopen = () => {
   console.log("WS Connected", ws);
   ws.send(JSON.stringify({

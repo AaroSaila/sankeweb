@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  <div id="lobby-div">
-    <p>Lobby</p>
-
-    <div id="lobby-id-input-div" th:if="${join}">
-      <label for="lobby-id-input">Enter lobby ID:</label>
-      <input id="lobby-id-input" type="number" value="0"/>
-      <button id="lobby-join-button">Join</button>
-    </div>
-
-    <span>Lobby id: <span id="lobby-id">none</span></span>
-    <div id="lobby-players">
-      <span>Players:</span>
-      <ul id="lobby-players-list"></ul>
+  <div id="games-container">
+    <div th:replace="fragments/main-game::main-game"></div>
+    <div>
+      <div th:replace="fragments/other-game::other-game" th:each="player : ${players}"></div>
     </div>
   </div>
-
-  <script th:unless="${join}" src="/multiplayer/lobby_create.js" type="module" defer></script>
-  <script th:if="${join}" src="/multiplayer/lobby_join.js" type="module" defer></script>
 </html>
