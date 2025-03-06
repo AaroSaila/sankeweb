@@ -51,12 +51,17 @@ public class SpGameStateSender extends Thread {
 
       long totalTime = System.currentTimeMillis() - startTime;
 
-      if (totalTime < game.getTickRate()) {
-        try {
-          Thread.sleep(game.getTickRate() - totalTime);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
+//      if (totalTime < game.getTickRate()) {
+//        try {
+//          Thread.sleep(game.getTickRate() - totalTime);
+//        } catch (InterruptedException e) {
+//          throw new RuntimeException(e);
+//        }
+//      }
+
+      while (totalTime < game.getTickRate()) {
+        Thread.yield();
+        totalTime = System.currentTimeMillis() - startTime;
       }
 
       if (session.isOpen()) {

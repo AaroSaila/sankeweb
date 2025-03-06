@@ -12,12 +12,14 @@ public class GameController {
   private int score;
   private char key;
   private int tickRate;
+  private boolean active;
 
   public GameController(int tickRate) {
     this.board = new Board();
     this.score = 0;
     this.key = 'w';
     this.tickRate = tickRate;
+    this.active = true;
   }
 
   public void handleKey() {
@@ -40,8 +42,13 @@ public class GameController {
   }
 
   public TickEvent tick() {
+    if (!this.active) {
+      return NONE;
+    }
+
     board.moveSanke();
     if (board.checkSankeCollision()) {
+      this.active = false;
       return HIT_TAIL;
     }
     if (board.checkFoodCollision()) {
@@ -53,6 +60,10 @@ public class GameController {
     handleKey();
 
     return NONE;
+  }
+
+  public void endGame() {
+    this.active = false;
   }
 
   public Board getBoard() {

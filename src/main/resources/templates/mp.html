@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <div id="games-container">
-    <div th:replace="fragments/main-game::main-game"></div>
-    <div>
-      <div th:replace="fragments/other-game::other-game" th:each="player : ${players}"></div>
+    <div th:replace="~{fragments/main-game::main-game(${host})}"></div>
+    <div id="other-players">
+      <div th:replace="~{fragments/other-game::other-game(${players})}"></div>
     </div>
   </div>
+
+<script src="/multiplayer/mp.js" type="module" defer></script>
 </html>

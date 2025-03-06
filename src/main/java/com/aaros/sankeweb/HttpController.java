@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
+
 @Controller
 public class HttpController {
   @GetMapping("/")
@@ -35,6 +37,13 @@ public class HttpController {
   )
   {
     String address = request.getRemoteAddr();
+    ArrayList<String> players = new ArrayList<>();
+    players.add(address);
+    players.add("2");
+    players.add("3");
+    players.add("4");
+    model.addAttribute("players", players);
+    model.addAttribute("host", true);
     return "mp";
   }
 }

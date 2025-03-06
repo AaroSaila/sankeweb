@@ -58,7 +58,22 @@
   color: red;
 }
 
+#games-container {
+  display: flex;
+  flex-direction: row;
+  height: 800px;
+}
+
 #other-players {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  margin-left: 10px;
+}
+
+.other-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
 }

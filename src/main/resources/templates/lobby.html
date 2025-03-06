@@ -16,6 +16,8 @@
     </div>
   </div>
 
+  <button th:unless="${join}" hx-get="/mp/start" hx-target="#view">Start</button>
+
   <script th:unless="${join}" src="/multiplayer/lobby_create.js" type="module" defer></script>
   <script th:if="${join}" src="/multiplayer/lobby_join.js" type="module" defer></script>
 </html>

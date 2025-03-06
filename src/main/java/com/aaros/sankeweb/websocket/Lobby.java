@@ -6,16 +6,13 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Lobby {
-  private final HashMap<String, SpGameStateSender> senders;
   private final HashMap<String, WebSocketSession> sessions;
 
   public Lobby(WebSocketSession firstPlayerSession) {
-    senders = new HashMap<>();
     sessions = new HashMap<>();
 
     String address = Objects.requireNonNull(firstPlayerSession.getRemoteAddress()).getAddress().getHostAddress();
 
-    senders.put(address, new SpGameStateSender(firstPlayerSession, 100));
     sessions.put(address, firstPlayerSession);
   }
 
@@ -37,13 +34,10 @@ public class Lobby {
 
   public void addPlayer(WebSocketSession newPlayerSession) {
     String address = Objects.requireNonNull(newPlayerSession.getRemoteAddress()).getAddress().getHostAddress();
-    senders.put(address, new SpGameStateSender(newPlayerSession, 100));
     sessions.put(address, newPlayerSession);
   }
 
   public void startGame() {
-    for (SpGameStateSender sender : senders.values()) {
-      sender.start();
-    }
+    new Thread(new MpGameStateSender(sessions)).start();
   }
 }

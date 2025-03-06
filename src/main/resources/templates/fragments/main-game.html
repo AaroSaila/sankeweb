@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<div th:fragment="main-game" id="main-game">
-  <div id="game-bar">
+<div th:fragment="main-game(host)" id="main-game">
+  <div id="game-bar" th:if="${host}">
     <button id="start">Start</button>
     <button id="stop">Stop</button>
   </div>
