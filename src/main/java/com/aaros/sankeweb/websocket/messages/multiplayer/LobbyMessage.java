@@ -1,4 +1,6 @@
-package com.aaros.sankeweb.websocket.messages;
+package com.aaros.sankeweb.websocket.messages.multiplayer;
+
+import com.aaros.sankeweb.websocket.messages.MessageType;
 
 public class LobbyMessage {
   private final MessageType msgType;
@@ -13,15 +15,15 @@ public class LobbyMessage {
 
   // Getters and setters
 
+  public MessageType getMsgType() {
+    return msgType;
+  }
+
   public int getLobbyId() {
     return lobbyId;
   }
 
   public String[] getPlayers() {
     return players;
-  }
-
-  public MessageType getMsgType() {
-    return msgType;
   }
 }

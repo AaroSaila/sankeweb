@@ -36,3 +36,11 @@
  * @property {array} players
  * @property {string} msgType
  */
+
+/**
+ * @typedef mpGameState
+ * @type {object}
+ * @property {string} msgType
+ * @property {array} otherGames
+ * @property {object} mainGame
+ */

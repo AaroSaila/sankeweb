@@ -1,4 +1,5 @@
 import BoardDrawer from "../utils/BoardDrawer.js";
+import KeyQueue from "../utils/KeyQueue.js";
 import Env from "../env.js";
 
 
@@ -10,8 +11,8 @@ const speedSpan = document.getElementById("main-speed");
 const INPUT_KEYS = ['w', 'a', 's', 'd', 'e'];
 
 let game = {};
-const keyQueue = [];
 let ws = null;
+let keyQueue = null;
 const boardDrawer = new BoardDrawer(
   canvas.getContext("2d"),
   canvas.width,
@@ -20,7 +21,8 @@ const boardDrawer = new BoardDrawer(
 );
 
 startButton.addEventListener("click", () => {
-  ws = new WebSocket(Env.ws);
+  ws = new WebSocket(Env.wsSp);
+  keyQueue = new KeyQueue(ws);
   ws.onopen = () => {
     ws.send(JSON.stringify({
       type: "SP_START",
@@ -35,7 +37,7 @@ startButton.addEventListener("click", () => {
       scoreSpan.textContent = game.score;
       speedSpan.textContent = game.tickRate;
     },
-    "SP_KEY_CHANGE": msg => {
+    "KEY_CHANGE": msg => {
       console.log(msg.text);
     },
     "GAME_OVER": _ => {
@@ -53,18 +55,8 @@ startButton.addEventListener("click", () => {
   startButton.style.display = "none";
 });
 
-const emptyKeyQueue = () => {
-  while (keyQueue.length > 0) {
-    ws.send(JSON.stringify({
-      type: "SP_KEY_CHANGE",
-      text: keyQueue.shift()
-    }))
-  }
-};
-
 stopButton.addEventListener("click", () => {
   keyQueue.push('e');
-  emptyKeyQueue()
 });
 
 // Add button press to event queue
@@ -72,5 +64,4 @@ window.addEventListener("keydown", event => {
   if (INPUT_KEYS.includes(event.key)) {
     keyQueue.push(event.key);
   }
-  emptyKeyQueue()
 })
