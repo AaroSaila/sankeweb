@@ -22,7 +22,7 @@ public class MpGameStateSender extends Thread {
     this.mapper = new ObjectMapper();
 
     for (var session : sessions) {
-      GameController game = new GameController(100);
+      GameController game = new GameController(100, session.getId());
       games.put(session.getId(), game);
     }
   }

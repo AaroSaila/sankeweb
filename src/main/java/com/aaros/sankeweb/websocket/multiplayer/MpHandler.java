@@ -78,17 +78,17 @@ public class MpHandler extends TextWebSocketHandler {
   private void handleMpStart(WebSocketSession session, InboundMessage msg) throws IOException {
     final int lobbyId = Integer.parseInt(msg.getText());
     final Lobby lobby = lobbies.get(lobbyId);
-    final boolean host = lobby.getHostId().equals(session.getId());
 
     final Context ctx = new Context();
-    ctx.setVariable("host", host);
-    ctx.setVariable("players", lobby.getSessionIdsAsArray());
+    ctx.setVariable("playersNum", lobby.getPlayerCount());
 
     final String html = templateEngine.process("mp", ctx);
     final SWTextMessage outboundMessage = new SWTextMessage(HTML, html);
     WebSocketSession[] sessions = lobby.getSessionsAsArray();
     for (WebSocketSession webSocketSession : sessions) {
-      webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(outboundMessage)));
+      synchronized (webSocketSession) {
+        webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(outboundMessage)));
+      }
     }
 
     lobby.startGame();

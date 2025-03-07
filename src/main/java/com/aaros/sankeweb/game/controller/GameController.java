@@ -13,13 +13,15 @@ public class GameController {
   private char key;
   private int tickRate;
   private boolean active;
+  private final String sessionId;
 
-  public GameController(int tickRate) {
+  public GameController(int tickRate, String sessionId) {
     this.board = new Board();
     this.score = 0;
     this.key = 'w';
     this.tickRate = tickRate;
     this.active = true;
+    this.sessionId = sessionId;
   }
 
   public void handleKey() {
@@ -92,5 +94,9 @@ public class GameController {
 
   public void setTickRate(int tickRate) {
     this.tickRate = tickRate;
+  }
+
+  public String getSessionId() {
+    return sessionId;
   }
 }

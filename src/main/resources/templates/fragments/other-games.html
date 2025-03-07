@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <div th:fragment="other-game(players)" th:each="player : ${players}" class="other-game">
-    <span id="other-name" th:text="${player}">Player</span>
+  <div th:fragment="other-games(playersNum)" th:each="i : ${#numbers.sequence(1, playersNum - 1, 1)}" class="other-game">
+    <span id="other-name">Player</span>
     <span>Score: <span class="other-score">0</span></span>
     <canvas class="other-board" width="300" height="300"></canvas>
   </div>

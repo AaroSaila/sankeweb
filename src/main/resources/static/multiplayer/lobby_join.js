@@ -22,6 +22,7 @@ joinBtn.addEventListener("mousedown", () => {
         alert(json.text);
         return;
       case "LOBBY":
+        sessionStorage.setItem("lobbyId", idInput.value);
         document.getElementById("lobby-id").textContent = json.lobbyId;
 
         replacePlayers(

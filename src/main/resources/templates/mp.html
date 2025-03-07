@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <div id="games-container">
-    <div th:replace="~{fragments/main-game::main-game(${host})}"></div>
+    <div th:replace="~{fragments/main-game::main-game(false)}"></div>
     <div id="other-players">
-      <div th:replace="~{fragments/other-game::other-game(${players})}"></div>
+      <div th:replace="~{fragments/other-games::other-games(${playersNum})}"></div>
     </div>
   </div>
 

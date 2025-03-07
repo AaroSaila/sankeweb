@@ -19,7 +19,7 @@ public class SpGameStateSender extends Thread {
 
   SpGameStateSender(WebSocketSession session, int tickRate) {
     this.session = session;
-    this.game = new GameController(tickRate);
+    this.game = new GameController(tickRate, session.getId());
     this.mapper = new ObjectMapper();
   }
 

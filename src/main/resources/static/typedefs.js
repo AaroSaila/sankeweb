@@ -27,6 +27,14 @@
  * @property {array} parts
  * @property {number} x
  * @property {number} y
+ *
+ * @typedef part
+ * @type {object}
+ * @property {number} x
+ * @property {number} y
+ * @property {number} index
+ * @property {string} dir
+ * @property {array} orders
  */
 
 /**

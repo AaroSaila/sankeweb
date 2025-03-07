@@ -4,6 +4,7 @@ import KeyQueue from "../utils/KeyQueue.js";
 const mp = (ws) => {
   const INPUT_KEYS = ['w', 'a', 's', 'd'];
   let mainDrawer = null;
+  let otherDrawers = null;
   const keyQueue = new KeyQueue(ws);
 
   ws.send(JSON.stringify({
@@ -17,8 +18,6 @@ const mp = (ws) => {
     if (mpGameState.msgType !== "GAMESTATE") {
       return;
     }
-
-    const otherGames = mpGameState.otherGames;
 
     // Populate main game
 
@@ -37,6 +36,35 @@ const mp = (ws) => {
     }
 
     mainDrawer.draw(mainGame.board);
+
+    // Populate other boards
+
+    const otherGames = mpGameState.otherGames;
+
+    if (otherDrawers === null) {
+      otherDrawers = {};
+      const boards = document.getElementsByClassName("other-board");
+      for (let i = 0; i < otherGames.length; i++) {
+        otherDrawers[otherGames[i].sessionId] = new BoardDrawer(
+          boards[i].getContext("2d"), 300, 300, 10
+        );
+      }
+    }
+
+    for (let i = 0; i < otherGames.length; i++) {
+      const board = otherGames[i].board;
+      board.sanke.x /= 2;
+      board.sanke.y /= 2;
+      const parts = board.sanke.parts;
+      for (let i = 0; i < parts.length; i++) {
+        parts[i].x /= 2;
+        parts[i].y /= 2;
+      }
+      board.food.x /= 2;
+      board.food.y /= 2;
+
+      otherDrawers[otherGames[i].sessionId].draw(board);
+    }
   }
 
   window.addEventListener("keydown", event => {
