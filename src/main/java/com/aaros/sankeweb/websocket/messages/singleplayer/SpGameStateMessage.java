@@ -8,10 +8,12 @@ import static com.aaros.sankeweb.websocket.messages.MessageType.GAMESTATE;
 public class SpGameStateMessage {
   private final MessageType msgType;
   private final GameController game;
+  private final boolean isMain;
 
-  public SpGameStateMessage(GameController game) {
+  public SpGameStateMessage(GameController game, boolean isMain) {
     this.msgType = GAMESTATE;
     this.game = game;
+    this.isMain = isMain;
   }
 
   public GameController getGame() {
@@ -20,5 +22,9 @@ public class SpGameStateMessage {
 
   public MessageType getMsgType() {
     return msgType;
+  }
+
+  public boolean getIsMain() {
+    return isMain;
   }
 }

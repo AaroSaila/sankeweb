@@ -49,10 +49,12 @@ public class SpHandler extends TextWebSocketHandler {
   }
 
   private void handleSpStart(WebSocketSession session) throws IOException {
-    SpGameStateSender sender = new SpGameStateSender(session, 100);
+    WebSocketSession[] sessionArray = new WebSocketSession[1];
+    sessionArray[0] = session;
+    SpGameStateSender sender = new SpGameStateSender(sessionArray, session.getId(), 100);
     spGameSenders.put(session.getId(), sender);
 
-    String json = mapper.writeValueAsString(new SpGameStateMessage(sender.getGame()));
+    String json = mapper.writeValueAsString(new SpGameStateMessage(sender.getGame(), true));
 
     session.sendMessage(new org.springframework.web.socket.TextMessage(json));
 
@@ -80,8 +82,11 @@ public class SpHandler extends TextWebSocketHandler {
   }
 
   @Override
-  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws InterruptedException {
     System.out.println("Connection " + session.getId() + " is closed");
+    SpGameStateSender sender = spGameSenders.get(session.getId());
+    sender.turnOff();
+    sender.join();
     spGameSenders.remove(session.getId());
   }
 }

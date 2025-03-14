@@ -3,6 +3,7 @@
  * @type {object}
  * @property {string} msgType
  * @property {object} game
+ * @property {boolean} isMain
  *
  * @typedef game
  * @type {object}
@@ -10,6 +11,8 @@
  * @property {string} key
  * @property {number} score
  * @property {number} tickRate
+ * @property {boolean} active
+ * @property {string} sessionId
  *
  * @typedef board
  * @type {object}
@@ -43,12 +46,4 @@
  * @property {number} lobbyId
  * @property {array} players
  * @property {string} msgType
- */
-
-/**
- * @typedef mpGameState
- * @type {object}
- * @property {string} msgType
- * @property {array} otherGames
- * @property {object} mainGame
  */

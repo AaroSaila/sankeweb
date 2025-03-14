@@ -5,6 +5,7 @@ import com.aaros.sankeweb.game.controller.TickEvent;
 import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -13,32 +14,34 @@ import static com.aaros.sankeweb.game.controller.TickEvent.HIT_TAIL;
 import static com.aaros.sankeweb.websocket.messages.MessageType.GAME_OVER;
 
 public class SpGameStateSender extends Thread {
-  private final WebSocketSession session;
+  private final WebSocketSession[] sessions;
   private final GameController game;
   private final ObjectMapper mapper;
+  private boolean running;
 
-  SpGameStateSender(WebSocketSession session, int tickRate) {
-    this.session = session;
-    this.game = new GameController(tickRate, session.getId());
+  public SpGameStateSender(WebSocketSession[] sessions, String sessionId, int tickRate) {
+    this.sessions = sessions;
+    this.game = new GameController(tickRate, sessionId);
     this.mapper = new ObjectMapper();
+    this.running = true;
   }
 
   @Override
   public void run() {
     while (true) {
       long startTime = System.currentTimeMillis();
-      if (!session.isOpen()) {
+
+      if (!running) {
         return;
       }
 
       TickEvent tick = game.tick();
 
       if (tick == HIT_TAIL) {
-        synchronized (session) {
+        for (WebSocketSession session : sessions) {
           try {
-            SWTextMessage msg = new SWTextMessage(GAME_OVER, "Game over");
-            session.sendMessage(new org.springframework.web.socket.TextMessage(mapper.writeValueAsString(msg)));
-            session.close();
+            SWTextMessage msg = new SWTextMessage(GAME_OVER, session.getId());
+            session.sendMessage(new TextMessage(mapper.writeValueAsString(msg)));
             return;
           } catch (IOException e) {
             throw new RuntimeException(e);
@@ -46,7 +49,6 @@ public class SpGameStateSender extends Thread {
         }
       }
 
-      SpGameStateMessage msg = new SpGameStateMessage(game);
 
       long totalTime = System.currentTimeMillis() - startTime;
 
@@ -55,17 +57,26 @@ public class SpGameStateSender extends Thread {
         totalTime = System.currentTimeMillis() - startTime;
       }
 
-      if (session.isOpen()) {
+      for (WebSocketSession session : sessions) {
         try {
+          final boolean isMain = session.getId().equals(game.getSessionId());
+          SpGameStateMessage msg = new SpGameStateMessage(game, isMain);
           String json = mapper.writeValueAsString(msg);
-          synchronized (session) {
-            session.sendMessage(new org.springframework.web.socket.TextMessage(json));
-          }
+          session.sendMessage(new TextMessage(json));
         } catch (IOException e) {
           throw new RuntimeException(e);
+        } catch (IllegalStateException _) {
         }
       }
     }
+  }
+
+  public String getSessionId() {
+    return game.getSessionId();
+  }
+
+  public void turnOff() {
+    running = false;
   }
 
   public GameController getGame() {

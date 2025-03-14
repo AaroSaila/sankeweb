@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -34,6 +35,10 @@ public class MpHandler extends TextWebSocketHandler {
     this.templateEngine = templateEngine;
   }
 
+  private ConcurrentWebSocketSessionDecorator makeConcurrent(WebSocketSession session) {
+    return new ConcurrentWebSocketSessionDecorator(session, 1000, 1000);
+  }
+
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     System.out.println("Connection " + session.getId() + " is opened in MpHandler");
@@ -41,7 +46,7 @@ public class MpHandler extends TextWebSocketHandler {
   }
 
   @Override
-  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws InterruptedException {
     final String sessionId = session.getId();
 
     System.out.println("Connection " + sessionId + " is closed in MpHandler");
@@ -81,20 +86,21 @@ public class MpHandler extends TextWebSocketHandler {
 
     final Context ctx = new Context();
     ctx.setVariable("playersNum", lobby.getPlayerCount());
+    ctx.setVariable("sessionId", session.getId());
 
     final String html = templateEngine.process("mp", ctx);
     final SWTextMessage outboundMessage = new SWTextMessage(HTML, html);
     WebSocketSession[] sessions = lobby.getSessionsAsArray();
     for (WebSocketSession webSocketSession : sessions) {
-      synchronized (webSocketSession) {
-        webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(outboundMessage)));
-      }
+      webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(outboundMessage)));
     }
 
     lobby.startGame();
   }
 
   private void handleCreateLobby(WebSocketSession session) throws IOException {
+    session = makeConcurrent(session);
+
     final int lobbyId = lobbyIdCounter;
     lobbyIdCounter++;
 
@@ -109,6 +115,8 @@ public class MpHandler extends TextWebSocketHandler {
   }
 
   private void handleJoinLobby(WebSocketSession session, InboundMessage msg) throws IOException {
+    session = makeConcurrent(session);
+
     int lobbyId;
     try {
       lobbyId = Integer.parseInt(msg.getText());
@@ -134,9 +142,7 @@ public class MpHandler extends TextWebSocketHandler {
 
     WebSocketSession[] sessions = lobby.getSessionsAsArray();
     for (WebSocketSession s : sessions) {
-      synchronized (s) {
-        s.sendMessage(new TextMessage(json));
-      }
+      s.sendMessage(new TextMessage(json));
     }
   }
 }

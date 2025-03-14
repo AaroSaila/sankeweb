@@ -1,70 +1,53 @@
 import BoardDrawer from "../utils/BoardDrawer.js";
 import KeyQueue from "../utils/KeyQueue.js";
+import downscaleBoard from "./downscaleBoard.js";
 
 const mp = (ws) => {
   const INPUT_KEYS = ['w', 'a', 's', 'd'];
-  let mainDrawer = null;
-  let otherDrawers = null;
+  const drawers = {};
   const keyQueue = new KeyQueue(ws);
 
-  ws.send(JSON.stringify({
-    type: "MP_START",
-    text: sessionStorage.getItem("lobbyId")
-  }));
+  const otherBoards = document.getElementsByClassName("other-board");
+  const otherBoardsWithoutDrawers = [];
+  for (let i = 0; i < otherBoards.length; i++) {
+    otherBoardsWithoutDrawers[i] = otherBoards.item(i);
+  }
 
   ws.onmessage = event => {
-    const mpGameState = JSON.parse(event.data);
+    console.log("OtherBoardsWithoutDrawers", otherBoardsWithoutDrawers);
+    const json = JSON.parse(event.data);
+    console.log(json);
 
-    if (mpGameState.msgType !== "GAMESTATE") {
+    if (json.msgType !== "GAMESTATE") {
       return;
     }
 
-    // Populate main game
+    console.log("drawers", drawers);
+    let drawer = drawers[json.game.sessionId];
 
-    const mainGame = mpGameState.mainGame;
-
-    document.getElementById("main-score").textContent = mainGame.score;
-    document.getElementById("main-speed").textContent = mainGame.tickRate;
-
-    if (mainDrawer === null) {
-      mainDrawer = new BoardDrawer(
-        document.getElementById("main-board").getContext("2d"),
-        600,
-        600,
-        20
-      );
-    }
-
-    mainDrawer.draw(mainGame.board);
-
-    // Populate other boards
-
-    const otherGames = mpGameState.otherGames;
-
-    if (otherDrawers === null) {
-      otherDrawers = {};
-      const boards = document.getElementsByClassName("other-board");
-      for (let i = 0; i < otherGames.length; i++) {
-        otherDrawers[otherGames[i].sessionId] = new BoardDrawer(
-          boards[i].getContext("2d"), 300, 300, 10
+    if (drawer === undefined) {
+      console.log("Drawer is undefined");
+      if (json.isMain) {
+        drawers[json.game.sessionId] = new BoardDrawer(
+          document.getElementById("main-board").getContext("2d"),
+          600, 600, 20
         );
+      } else {
+        console.log(otherBoardsWithoutDrawers[0]);
+        drawers[json.game.sessionId] = new BoardDrawer(
+          otherBoardsWithoutDrawers[0].getContext("2d"),
+          300, 300, 10
+        );
+        otherBoardsWithoutDrawers.shift();
       }
+
+      drawer = drawers[json.game.sessionId];
+      console.log("Drawers after addition", drawers);
     }
 
-    for (let i = 0; i < otherGames.length; i++) {
-      const board = otherGames[i].board;
-      board.sanke.x /= 2;
-      board.sanke.y /= 2;
-      const parts = board.sanke.parts;
-      for (let i = 0; i < parts.length; i++) {
-        parts[i].x /= 2;
-        parts[i].y /= 2;
-      }
-      board.food.x /= 2;
-      board.food.y /= 2;
+    const board = json.isMain ? json.game.board : downscaleBoard(json.game.board, 2);
 
-      otherDrawers[otherGames[i].sessionId].draw(board);
-    }
+    drawer.draw(board);
   }
 
   window.addEventListener("keydown", event => {
