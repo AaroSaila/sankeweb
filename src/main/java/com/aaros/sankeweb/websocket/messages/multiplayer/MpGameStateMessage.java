@@ -2,8 +2,6 @@ package com.aaros.sankeweb.websocket.messages.multiplayer;
 
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.websocket.messages.MessageType;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import static com.aaros.sankeweb.websocket.messages.MessageType.GAMESTATE;
 

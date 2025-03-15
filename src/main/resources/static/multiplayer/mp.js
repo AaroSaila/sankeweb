@@ -14,26 +14,21 @@ const mp = (ws) => {
   }
 
   ws.onmessage = event => {
-    console.log("OtherBoardsWithoutDrawers", otherBoardsWithoutDrawers);
     const json = JSON.parse(event.data);
-    console.log(json);
 
     if (json.msgType !== "GAMESTATE") {
       return;
     }
 
-    console.log("drawers", drawers);
     let drawer = drawers[json.game.sessionId];
 
     if (drawer === undefined) {
-      console.log("Drawer is undefined");
       if (json.isMain) {
         drawers[json.game.sessionId] = new BoardDrawer(
           document.getElementById("main-board").getContext("2d"),
           600, 600, 20
         );
       } else {
-        console.log(otherBoardsWithoutDrawers[0]);
         drawers[json.game.sessionId] = new BoardDrawer(
           otherBoardsWithoutDrawers[0].getContext("2d"),
           300, 300, 10
@@ -42,7 +37,6 @@ const mp = (ws) => {
       }
 
       drawer = drawers[json.game.sessionId];
-      console.log("Drawers after addition", drawers);
     }
 
     const board = json.isMain ? json.game.board : downscaleBoard(json.game.board, 2);
