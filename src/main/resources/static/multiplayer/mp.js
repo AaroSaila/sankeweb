@@ -5,12 +5,15 @@ import downscaleBoard from "./downscaleBoard.js";
 const mp = (ws) => {
   const INPUT_KEYS = ['w', 'a', 's', 'd'];
   const drawers = {};
+  const mainSpeed = document.getElementById("main-speed");
+  const mainScore = document.getElementById("main-score");
+  const otherScores = {};
   const keyQueue = new KeyQueue(ws);
 
-  const otherBoards = document.getElementsByClassName("other-board");
-  const otherBoardsWithoutDrawers = [];
-  for (let i = 0; i < otherBoards.length; i++) {
-    otherBoardsWithoutDrawers[i] = otherBoards.item(i);
+  const otherGames = document.getElementsByClassName("other-game");
+  const otherGamesWithoutPlayers = [];
+  for (let i = 0; i < otherGames.length; i++) {
+    otherGamesWithoutPlayers[i] = otherGames.item(i);
   }
 
   ws.onmessage = event => {
@@ -29,17 +32,37 @@ const mp = (ws) => {
           600, 600, 20
         );
       } else {
+        const otherGame = otherGamesWithoutPlayers[0];
+        otherGame.id = json.game.sessionId;
+
+        // Init board
+        const ctx = otherGame.children.item(2).getContext("2d");
         drawers[json.game.sessionId] = new BoardDrawer(
-          otherBoardsWithoutDrawers[0].getContext("2d"),
-          300, 300, 10
+          ctx, 300, 300, 10
         );
-        otherBoardsWithoutDrawers.shift();
+
+        // Set name
+        otherGame.children.item(0).children.item(0)
+          .innerText = json.game.sessionId;
+
+        // Init score
+        otherScores[json.game.sessionId] = otherGame.children.item(1).children.item(0);
+
+        otherGamesWithoutPlayers.shift();
       }
 
       drawer = drawers[json.game.sessionId];
     }
 
-    const board = json.isMain ? json.game.board : downscaleBoard(json.game.board, 2);
+    let board = null;
+    if (json.isMain) {
+      board = json.game.board;
+      mainScore.innerText = json.game.score;
+      mainSpeed.innerText = json.game.tickRate;
+    } else {
+      board = downscaleBoard(json.game.board, 2);
+      otherScores[json.game.sessionId].innerText = json.game.score;
+    }
 
     drawer.draw(board);
   }
@@ -48,6 +71,8 @@ const mp = (ws) => {
     if (INPUT_KEYS.includes(event.key)) {
       keyQueue.push(event.key);
     }
+
+    keyQueue.emptyQueue();
   });
 }
 

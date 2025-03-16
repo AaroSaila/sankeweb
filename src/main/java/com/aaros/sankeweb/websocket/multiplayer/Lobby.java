@@ -3,6 +3,7 @@ package com.aaros.sankeweb.websocket.multiplayer;
 import com.aaros.sankeweb.websocket.singleplayer.SpGameStateSender;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,22 @@ public class Lobby {
         return;
       }
     }
+  }
+
+  public void keyChange(String sessionId, char key) throws IOException {
+    boolean hasPlayer = hasPlayer(sessionId);
+    if (!hasPlayer) return;
+
+    SpGameStateSender sender = null;
+    for (SpGameStateSender s : senders) {
+      if (s.getSessionId().equals(sessionId)) {
+        sender = s;
+      }
+    }
+
+    assert sender != null;
+
+    sender.getGame().setKey(key);
   }
 
   public void startGame() {

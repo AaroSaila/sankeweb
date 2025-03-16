@@ -36,7 +36,7 @@ public class MpHandler extends TextWebSocketHandler {
   }
 
   private ConcurrentWebSocketSessionDecorator makeConcurrent(WebSocketSession session) {
-    return new ConcurrentWebSocketSessionDecorator(session, 1000, 1000);
+    return new ConcurrentWebSocketSessionDecorator(session, 1000, 10000);
   }
 
   @Override
@@ -67,7 +67,7 @@ public class MpHandler extends TextWebSocketHandler {
         handleMpStart(session, msg);
         break;
       case KEY_CHANGE:
-//        handleKeyChange();
+        handleKeyChange(session.getId(), msg.getText().charAt(0));
         break;
       case CREATE_LOBBY:
         handleCreateLobby(session);
@@ -96,6 +96,12 @@ public class MpHandler extends TextWebSocketHandler {
     }
 
     lobby.startGame();
+  }
+
+  private void handleKeyChange(String sessionId, char key) throws IOException {
+    for (Lobby lobby : lobbies.values()) {
+      lobby.keyChange(sessionId, key);
+    }
   }
 
   private void handleCreateLobby(WebSocketSession session) throws IOException {

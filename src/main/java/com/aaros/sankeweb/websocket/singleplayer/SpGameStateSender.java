@@ -62,7 +62,9 @@ public class SpGameStateSender extends Thread {
           final boolean isMain = session.getId().equals(game.getSessionId());
           SpGameStateMessage msg = new SpGameStateMessage(game, isMain);
           String json = mapper.writeValueAsString(msg);
-          session.sendMessage(new TextMessage(json));
+          TextMessage textMessage = new TextMessage(json);
+//          System.out.println(textMessage);
+          session.sendMessage(textMessage);
         } catch (IOException e) {
           throw new RuntimeException(e);
         } catch (IllegalStateException _) {
