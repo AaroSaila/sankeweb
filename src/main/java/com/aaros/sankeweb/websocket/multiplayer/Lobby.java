@@ -1,6 +1,6 @@
 package com.aaros.sankeweb.websocket.multiplayer;
 
-import com.aaros.sankeweb.websocket.singleplayer.SpGameStateSender;
+import com.aaros.sankeweb.websocket.GameStateSender;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Lobby {
   private final List<WebSocketSession> players;
-  private SpGameStateSender[] senders;
+  private GameStateSender[] senders;
   final private String hostId;
 
   public Lobby(WebSocketSession firstPlayerSession) {
@@ -56,7 +56,7 @@ public class Lobby {
       return;
     }
 
-    for (SpGameStateSender sender : senders) {
+    for (GameStateSender sender : senders) {
       if (sender.getSessionId().equals(session.getId())) {
         sender.turnOff();
         sender.join();
@@ -69,8 +69,8 @@ public class Lobby {
     boolean hasPlayer = hasPlayer(sessionId);
     if (!hasPlayer) return;
 
-    SpGameStateSender sender = null;
-    for (SpGameStateSender s : senders) {
+    GameStateSender sender = null;
+    for (GameStateSender s : senders) {
       if (s.getSessionId().equals(sessionId)) {
         sender = s;
       }
@@ -82,9 +82,9 @@ public class Lobby {
   }
 
   public void startGame() {
-    senders = new SpGameStateSender[players.size()];
+    senders = new GameStateSender[players.size()];
     for (int i = 0 ; i < players.size(); i++) {
-      senders[i] = new SpGameStateSender(players.toArray(new WebSocketSession[0]), players.get(i).getId(), 100);
+      senders[i] = new GameStateSender(players.toArray(new WebSocketSession[0]), players.get(i).getId(), 100);
       senders[i].start();
     }
   }

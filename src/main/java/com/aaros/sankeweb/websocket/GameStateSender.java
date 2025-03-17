@@ -1,4 +1,4 @@
-package com.aaros.sankeweb.websocket.singleplayer;
+package com.aaros.sankeweb.websocket;
 
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.game.controller.TickEvent;
@@ -13,13 +13,13 @@ import java.io.IOException;
 import static com.aaros.sankeweb.game.controller.TickEvent.HIT_TAIL;
 import static com.aaros.sankeweb.websocket.messages.MessageType.GAME_OVER;
 
-public class SpGameStateSender extends Thread {
+public class GameStateSender extends Thread {
   private final WebSocketSession[] sessions;
   private final GameController game;
   private final ObjectMapper mapper;
   private boolean running;
 
-  public SpGameStateSender(WebSocketSession[] sessions, String sessionId, int tickRate) {
+  public GameStateSender(WebSocketSession[] sessions, String sessionId, int tickRate) {
     this.sessions = sessions;
     this.game = new GameController(tickRate, sessionId);
     this.mapper = new ObjectMapper();

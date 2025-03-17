@@ -1,6 +1,7 @@
 package com.aaros.sankeweb.websocket.singleplayer;
 
 import com.aaros.sankeweb.game.controller.GameController;
+import com.aaros.sankeweb.websocket.GameStateSender;
 import com.aaros.sankeweb.websocket.messages.InboundMessage;
 import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
@@ -20,7 +21,7 @@ import static com.aaros.sankeweb.websocket.messages.MessageType.KEY_CHANGE;
 @Controller
 public class SpHandler extends TextWebSocketHandler {
   private final ObjectMapper mapper;
-  private final Map<String, SpGameStateSender> spGameSenders;
+  private final Map<String, GameStateSender> spGameSenders;
 
   public SpHandler() {
     this.mapper = new ObjectMapper();
@@ -51,7 +52,7 @@ public class SpHandler extends TextWebSocketHandler {
   private void handleSpStart(WebSocketSession session) throws IOException {
     WebSocketSession[] sessionArray = new WebSocketSession[1];
     sessionArray[0] = session;
-    SpGameStateSender sender = new SpGameStateSender(sessionArray, session.getId(), 100);
+    GameStateSender sender = new GameStateSender(sessionArray, session.getId(), 100);
     spGameSenders.put(session.getId(), sender);
 
     String json = mapper.writeValueAsString(new SpGameStateMessage(sender.getGame(), true));
@@ -84,7 +85,7 @@ public class SpHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws InterruptedException {
     System.out.println("Connection " + session.getId() + " is closed");
-    SpGameStateSender sender = spGameSenders.get(session.getId());
+    GameStateSender sender = spGameSenders.get(session.getId());
     sender.turnOff();
     sender.join();
     spGameSenders.remove(session.getId());
