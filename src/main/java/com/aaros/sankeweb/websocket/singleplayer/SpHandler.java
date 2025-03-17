@@ -3,7 +3,7 @@ package com.aaros.sankeweb.websocket.singleplayer;
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.websocket.GameStateSender;
 import com.aaros.sankeweb.websocket.messages.InboundMessage;
-import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
+import com.aaros.sankeweb.websocket.messages.GameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
@@ -55,7 +55,7 @@ public class SpHandler extends TextWebSocketHandler {
     GameStateSender sender = new GameStateSender(sessionArray, session.getId(), 100);
     spGameSenders.put(session.getId(), sender);
 
-    String json = mapper.writeValueAsString(new SpGameStateMessage(sender.getGame(), true));
+    String json = mapper.writeValueAsString(new GameStateMessage(sender.getGame(), true));
 
     session.sendMessage(new org.springframework.web.socket.TextMessage(json));
 

@@ -3,7 +3,7 @@ package com.aaros.sankeweb.websocket;
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.game.controller.TickEvent;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
-import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
+import com.aaros.sankeweb.websocket.messages.GameStateMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -50,8 +50,8 @@ public class GameStateSender extends Thread {
       }
 
       try {
-        TextMessage mainMsg = new TextMessage(mapper.writeValueAsString(new SpGameStateMessage(game, true)));
-        TextMessage otherMsg = new TextMessage(mapper.writeValueAsString(new SpGameStateMessage(game, false)));
+        TextMessage mainMsg = new TextMessage(mapper.writeValueAsString(new GameStateMessage(game, true)));
+        TextMessage otherMsg = new TextMessage(mapper.writeValueAsString(new GameStateMessage(game, false)));
 
         final long totalTime = System.currentTimeMillis() - startTime;
 

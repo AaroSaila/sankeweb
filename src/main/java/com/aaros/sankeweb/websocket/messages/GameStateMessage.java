@@ -1,16 +1,15 @@
-package com.aaros.sankeweb.websocket.messages.singleplayer;
+package com.aaros.sankeweb.websocket.messages;
 
 import com.aaros.sankeweb.game.controller.GameController;
-import com.aaros.sankeweb.websocket.messages.MessageType;
 
 import static com.aaros.sankeweb.websocket.messages.MessageType.GAMESTATE;
 
-public class SpGameStateMessage {
+public class GameStateMessage {
   private final MessageType msgType;
   private final GameController game;
   private final boolean isMain;
 
-  public SpGameStateMessage(GameController game, boolean isMain) {
+  public GameStateMessage(GameController game, boolean isMain) {
     this.msgType = GAMESTATE;
     this.game = game;
     this.isMain = isMain;
