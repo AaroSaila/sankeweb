@@ -2,8 +2,8 @@ package com.aaros.sankeweb.websocket;
 
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.game.controller.TickEvent;
-import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
+import com.aaros.sankeweb.websocket.messages.singleplayer.SpGameStateMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -49,27 +49,31 @@ public class GameStateSender extends Thread {
         }
       }
 
+      try {
+        TextMessage mainMsg = new TextMessage(mapper.writeValueAsString(new SpGameStateMessage(game, true)));
+        TextMessage otherMsg = new TextMessage(mapper.writeValueAsString(new SpGameStateMessage(game, false)));
 
-      long totalTime = System.currentTimeMillis() - startTime;
+        final long totalTime = System.currentTimeMillis() - startTime;
 
-      while (totalTime < game.getTickRate()) {
-        Thread.yield();
-        totalTime = System.currentTimeMillis() - startTime;
-      }
-
-      for (WebSocketSession session : sessions) {
-        try {
-          final boolean isMain = session.getId().equals(game.getSessionId());
-          SpGameStateMessage msg = new SpGameStateMessage(game, isMain);
-          String json = mapper.writeValueAsString(msg);
-          TextMessage textMessage = new TextMessage(json);
-//          System.out.println(textMessage);
-          session.sendMessage(textMessage);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        } catch (IllegalStateException _) {
+        final int tickRate = game.getTickRate();
+        if (totalTime < tickRate) {
+          Thread.sleep(tickRate - totalTime);
         }
+
+        for (WebSocketSession session : sessions) {
+          try {
+            if (session.getId().equals(game.getSessionId())) {
+              session.sendMessage(mainMsg);
+            } else {
+              session.sendMessage(otherMsg);
+            }
+          } catch (IllegalStateException _) {
+          }
+        }
+      } catch (IOException | InterruptedException e) {
+        throw new RuntimeException(e);
       }
+
     }
   }
 
