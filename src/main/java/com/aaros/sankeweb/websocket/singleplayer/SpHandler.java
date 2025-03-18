@@ -2,8 +2,9 @@ package com.aaros.sankeweb.websocket.singleplayer;
 
 import com.aaros.sankeweb.game.controller.GameController;
 import com.aaros.sankeweb.websocket.GameStateSender;
-import com.aaros.sankeweb.websocket.messages.InboundMessage;
+import com.aaros.sankeweb.websocket.WsUtil;
 import com.aaros.sankeweb.websocket.messages.GameStateMessage;
+import com.aaros.sankeweb.websocket.messages.InboundMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
@@ -50,6 +51,8 @@ public class SpHandler extends TextWebSocketHandler {
   }
 
   private void handleSpStart(WebSocketSession session) throws IOException {
+    session = WsUtil.makeConcurrent(session);
+
     WebSocketSession[] sessionArray = new WebSocketSession[1];
     sessionArray[0] = session;
     GameStateSender sender = new GameStateSender(sessionArray, session.getId(), 100);
@@ -63,8 +66,10 @@ public class SpHandler extends TextWebSocketHandler {
   }
 
   private void handleSpKeyChange(WebSocketSession session, InboundMessage msg) throws IOException {
-    GameController game = spGameSenders.get(session.getId()).getGame();
-    char key = msg.getText().charAt(0);
+    final GameStateSender sender = spGameSenders.get(session.getId());
+    final GameController game = sender.getGame();
+    session = sender.getFirstSession();
+    final char key = msg.getText().charAt(0);
 
     if (key == 'e') {
       session.close();
@@ -73,13 +78,11 @@ public class SpHandler extends TextWebSocketHandler {
 
     game.setKey(key);
 
-    SWTextMessage textMsg = new SWTextMessage(KEY_CHANGE, "Key changed to: " + game.getKey());
+    final SWTextMessage textMsg = new SWTextMessage(KEY_CHANGE, "Key changed to: " + game.getKey());
 
-    String json = mapper.writeValueAsString(textMsg);
+    final String json = mapper.writeValueAsString(textMsg);
 
-    synchronized (session) {
-      session.sendMessage(new org.springframework.web.socket.TextMessage(json));
-    }
+    session.sendMessage(new org.springframework.web.socket.TextMessage(json));
   }
 
   @Override

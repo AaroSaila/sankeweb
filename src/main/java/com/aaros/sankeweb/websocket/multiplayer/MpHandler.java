@@ -1,5 +1,6 @@
 package com.aaros.sankeweb.websocket.multiplayer;
 
+import com.aaros.sankeweb.websocket.WsUtil;
 import com.aaros.sankeweb.websocket.messages.InboundMessage;
 import com.aaros.sankeweb.websocket.messages.SWTextMessage;
 import com.aaros.sankeweb.websocket.messages.multiplayer.LobbyMessage;
@@ -35,9 +36,6 @@ public class MpHandler extends TextWebSocketHandler {
     this.templateEngine = templateEngine;
   }
 
-  private ConcurrentWebSocketSessionDecorator makeConcurrent(WebSocketSession session) {
-    return new ConcurrentWebSocketSessionDecorator(session, 1000, 10000);
-  }
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
@@ -105,7 +103,7 @@ public class MpHandler extends TextWebSocketHandler {
   }
 
   private void handleCreateLobby(WebSocketSession session) throws IOException {
-    session = makeConcurrent(session);
+    session = WsUtil.makeConcurrent(session);
 
     final int lobbyId = lobbyIdCounter;
     lobbyIdCounter++;
@@ -121,7 +119,7 @@ public class MpHandler extends TextWebSocketHandler {
   }
 
   private void handleJoinLobby(WebSocketSession session, InboundMessage msg) throws IOException {
-    session = makeConcurrent(session);
+    session = WsUtil.makeConcurrent(session);
 
     int lobbyId;
     try {

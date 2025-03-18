@@ -88,4 +88,8 @@ public class GameStateSender extends Thread {
   public GameController getGame() {
     return game;
   }
+
+  public WebSocketSession getFirstSession() {
+    return sessions[0];
+  }
 }
