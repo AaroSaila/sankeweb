@@ -54,7 +54,7 @@ const mp = (ws) => {
       drawer = drawers[json.game.sessionId];
     }
 
-    let board = null;
+    let board;
     if (json.isMain) {
       board = json.game.board;
       mainScore.innerText = json.game.score;
