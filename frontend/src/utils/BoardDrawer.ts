@@ -1,4 +1,4 @@
-import Game from "../game/Game";
+import Game from "../game/Game.js";
 
 interface DrawInfo {
   [index: string]: number,
@@ -24,32 +24,27 @@ export default class BoardDrawer {
   game: Game;
   snakeColor: string;
   foodColor: string;
-  boardSize: number;
-  drawInfo: DrawInfo | null;
 
-  constructor(ctx: CanvasRenderingContext2D, game: Game, targetBoardSize: number) {
+  constructor(ctx: CanvasRenderingContext2D, game: Game) {
     this.ctx = ctx;
     this.game = game;
     this.snakeColor = "green";
     this.foodColor = "red";
-    this.boardSize = targetBoardSize;
-    this.drawInfo = null;
   }
 
-  getDrawInfo() {
-    const drawInfo: DrawInfo = emptyDrawInfo();
-    drawInfo.snakeX = this.game.snake.x;
-    drawInfo.snakeY = this.game.snake.y;
-    drawInfo.foodX = this.game.food.x;
-    drawInfo.foodY = this.game.food.y;
-    drawInfo.entitySize = this.game.entitySize;
+  drawFood() {
+    this.ctx.fillStyle = this.foodColor;
+    this.ctx.fillRect(this.game.food.x, this.game.food.y, this.game.entitySize, this.game.entitySize);
+  }
 
-    const scaleFactor = this.boardSize / this.game.boardSize;
+  drawSnakePart(x: number, y: number) {
+    this.ctx.fillStyle = this.snakeColor;
+    this.ctx.fillRect(x, y, this.game.entitySize, this.game.entitySize)
+  }
 
-    for (let key in drawInfo) {
-      drawInfo[key] *= scaleFactor;
-    }
-
-    return drawInfo;
+  draw() {
+    this.ctx.clearRect(0, 0, this.game.boardSize, this.game.boardSize);
+    this.drawSnakePart(this.game.snake.x, this.game.snake.y);
+    this.drawFood();
   }
 }

@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "lib": [
+      "ES6",
+      "ES7",
+      "DOM",
+    ],
     "target": "ES6",
     "alwaysStrict": true,
     "strict": true,
