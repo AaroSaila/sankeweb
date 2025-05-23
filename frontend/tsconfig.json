@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "alwaysStrict": true,
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "../src/main/resources/static"
+  }
+}
