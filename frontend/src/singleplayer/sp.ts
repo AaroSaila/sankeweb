@@ -1,17 +1,7 @@
 import BoardDrawer from "../utils/BoardDrawer.js";
 import KeyQueue from "../utils/KeyQueue.js";
-import env from "../env.js";
 import Game from "../game/Game.js";
-
-function startGameLoop(game: Game, drawer: BoardDrawer): number {
-  const gameLoop = () => {
-    game.tick();
-    drawer.draw();
-  }
-
-  return setInterval(gameLoop, 500)
-}
-
+import TickEvent from "../TickEvent.js";
 
 const startButton = document.getElementById("start") as HTMLButtonElement;
 const stopButton = document.getElementById("stop") as HTMLButtonElement;
@@ -22,8 +12,26 @@ const INPUT_KEYS: Array<string> = ['w', 'a', 's', 'd', 'e'];
 
 let ws: WebSocket | null = null;
 
+function startGameLoop(game: Game, drawer: BoardDrawer): number {
+  const gameLoop = () => {
+    const tickEvent = game.tick();
+    switch (tickEvent) {
+      case TickEvent.NONE:
+        break;
+      case TickEvent.FOOD:
+        scoreSpan.textContent = game.score.toString();
+        break;
+      default:
+        console.error("Invalid TickEvent in sp::startGameLoop");
+    }
+    drawer.draw();
+  }
+
+  return setInterval(gameLoop, 250)
+}
+
 startButton.addEventListener("click", () => {
-  ws = new WebSocket(env.wsSp);
+  ws = new WebSocket("/ws/sp");
   // ws.onopen = () => {
   //   ws?.send(JSON.stringify({
   //     type: "SP_START",
@@ -38,7 +46,7 @@ startButton.addEventListener("click", () => {
     return;
   }
 
-  const game = new Game(1, 600, 20, 0, 20, 300, 300)
+  const game = new Game(1, 600, 20, 0, 20, 100, 100)
   let keyQueue: KeyQueue = new KeyQueue(game, ws);
   const drawer = new BoardDrawer(ctx, game);
   const gameLoopIntervalId = startGameLoop(game, drawer);

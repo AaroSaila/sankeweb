@@ -1,10 +1,10 @@
-const host = "0.0.0.0";
-const port = 5490;
+const HOST = location.hostname;
+const PORT = location.port;
 
 const ENV = {
-  http: `http://${host}:${port}`,
-  wsSp: `ws://${host}:${port}/ws/sp`,
-  wsMp: `ws://${host}:${port}/ws/mp`
+  http: `http://${HOST}:${PORT}`,
+  wsSp: `ws://${HOST}:${PORT}/ws/sp`,
+  wsMp: `ws://${HOST}:${PORT}/ws/mp`
 };
 
 

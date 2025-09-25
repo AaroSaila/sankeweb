@@ -1,0 +1,33 @@
+function emptyDrawInfo() {
+    return {
+        snakeX: -1,
+        snakeY: -1,
+        foodX: -1,
+        foodY: -1,
+        entitySize: -1
+    };
+}
+export default class BoardDrawer {
+    constructor(ctx, game) {
+        this.ctx = ctx;
+        this.game = game;
+        this.snakeColor = "green";
+        this.foodColor = "red";
+    }
+    drawFood() {
+        this.ctx.fillStyle = this.foodColor;
+        this.ctx.fillRect(this.game.food.x, this.game.food.y, this.game.entitySize, this.game.entitySize);
+    }
+    drawSnakePart(x, y) {
+        this.ctx.fillStyle = this.snakeColor;
+        this.ctx.fillRect(x, y, this.game.entitySize, this.game.entitySize);
+    }
+    draw() {
+        this.ctx.clearRect(0, 0, this.game.boardSize, this.game.boardSize);
+        this.drawSnakePart(this.game.snake.x, this.game.snake.y);
+        for (let i = 0; i < this.game.snake.parts.length; i++) {
+            this.drawSnakePart(this.game.snake.parts[i].x, this.game.snake.parts[i].y);
+        }
+        this.drawFood();
+    }
+}

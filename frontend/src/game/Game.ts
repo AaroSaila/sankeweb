@@ -1,5 +1,6 @@
 import Snake from "./Snake.js";
 import Food from "./Food.js";
+import TickEvent from "../TickEvent.js";
 
 interface Bounds {
     up: number,
@@ -41,7 +42,17 @@ export default class Game {
         this.food = new Food(this, foodX, foodY);
     }
 
-    tick() {
+    tick(): TickEvent {
+        let returnVal = TickEvent.NONE;
         this.snake.move();
+        if (this.snake.checkFoodCollision()) {
+            console.log("Food collision");
+            this.score++;
+            this.food.newLocation();
+            this.snake.addPart();
+            returnVal = TickEvent.FOOD;
+        }
+
+        return returnVal;
     }
 }

@@ -45,6 +45,9 @@ export default class BoardDrawer {
   draw() {
     this.ctx.clearRect(0, 0, this.game.boardSize, this.game.boardSize);
     this.drawSnakePart(this.game.snake.x, this.game.snake.y);
+    for (let i = 0; i < this.game.snake.parts.length; i++) {
+      this.drawSnakePart(this.game.snake.parts[i].x, this.game.snake.parts[i].y);
+    }
     this.drawFood();
   }
 }
